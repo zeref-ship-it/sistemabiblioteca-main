@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-3 fw-normal">Acesso Administrativo</h1>
+                <p class="text-muted small">Use admin@admin.com / 123</p>
+            </div>
+            <form asp-action="Login" method="post">
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                <div class="form-floating mb-3">
+                    <input type="email" name="email" class="form-control" id="floatingInput" placeholder="nome@exemplo.com">
+                    <label for="floatingInput">E-mail</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" name="senha" class="form-control" id="floatingPassword" placeholder="Senha">
+                    <label for="floatingPassword">Senha</label>
+                </div>
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
+                @if(ViewBag.Erro != null) { <p class="text-danger mt-3 text-center">@ViewBag.Erro</p> }
+            </form>
+        </div>
+    </div>
+</div>

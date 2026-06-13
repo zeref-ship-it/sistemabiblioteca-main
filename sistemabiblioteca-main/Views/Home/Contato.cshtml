@@ -1,0 +1,66 @@
+@model sistemabiblioteca.Models.ContatoViewModel
+@{
+    ViewData["Title"] = "Contato";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white text-center py-3" style="background-color: #0055ff;">
+                    <h2 class="mb-0">Fale Conosco</h2>
+                </div>
+                <div class="card-body p-4">
+                    @if (TempData["MensagemSucesso"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["MensagemSucesso"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Contato" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Nome" class="form-label fw-bold"></label>
+                            <input asp-for="Nome" class="form-control" placeholder="Seu nome completo" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold"></label>
+                            <input asp-for="Email" class="form-control" placeholder="exemplo@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Assunto" class="form-label fw-bold"></label>
+                            <input asp-for="Assunto" class="form-control" placeholder="Assunto da mensagem" />
+                            <span asp-validation-for="Assunto" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Mensagem" class="form-label fw-bold"></label>
+                            <textarea asp-for="Mensagem" class="form-control" rows="4" placeholder="Escreva sua mensagem aqui..."></textarea>
+                            <span asp-validation-for="Mensagem" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn text-white btn-lg" style="background-color: #0055ff;">Enviar Mensagem</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-5 text-center text-muted">
+                <p>Valparaiso 1, Qd 26 Lt 10 - Valparaiso de Goiás, Goiás</p>
+                <p>Telefone: (61) 99884-6316 | Email: contato@biblioteca.com</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

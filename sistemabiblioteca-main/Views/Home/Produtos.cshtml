@@ -1,0 +1,60 @@
+@model List<sistemabiblioteca.Models.Produto>
+@{
+    ViewData["Title"] = "Nossos Produtos";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Nossos Produtos</h2>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form asp-action="Produtos" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <input type="text" name="busca" class="form-control" placeholder="Pesquisar por nome ou descrição...">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Pesquisar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var produto in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm transition-hover">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@produto.Nome</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@produto.Categoria</h6>
+                            <p class="card-text">@produto.Descricao</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-success fs-5">@produto.Preco.ToString("C")</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            Nenhum produto encontrado.
+        </div>
+    }
+</div>
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        transition: all 0.3s ease-in-out;
+    }
+</style>
