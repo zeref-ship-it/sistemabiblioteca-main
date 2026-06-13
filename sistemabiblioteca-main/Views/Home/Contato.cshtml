@@ -3,64 +3,350 @@
     ViewData["Title"] = "Contato";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header text-white text-center py-3" style="background-color: #0055ff;">
-                    <h2 class="mb-0">Fale Conosco</h2>
-                </div>
-                <div class="card-body p-4">
-                    @if (TempData["MensagemSucesso"] != null)
-                    {
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            @TempData["MensagemSucesso"]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-                    <form asp-action="Contato" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                        <div class="mb-3">
-                            <label asp-for="Nome" class="form-label fw-bold"></label>
-                            <input asp-for="Nome" class="form-control" placeholder="Seu nome completo" />
-                            <span asp-validation-for="Nome" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label fw-bold"></label>
-                            <input asp-for="Email" class="form-control" placeholder="exemplo@email.com" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Assunto" class="form-label fw-bold"></label>
-                            <input asp-for="Assunto" class="form-control" placeholder="Assunto da mensagem" />
-                            <span asp-validation-for="Assunto" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Mensagem" class="form-label fw-bold"></label>
-                            <textarea asp-for="Mensagem" class="form-control" rows="4" placeholder="Escreva sua mensagem aqui..."></textarea>
-                            <span asp-validation-for="Mensagem" class="text-danger"></span>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn text-white btn-lg" style="background-color: #0055ff;">Enviar Mensagem</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="mt-5 text-center text-muted">
-                <p>Valparaiso 1, Qd 26 Lt 10 - Valparaiso de Goiás, Goiás</p>
-                <p>Telefone: (61) 99884-6316 | Email: contato@biblioteca.com</p>
-            </div>
+<section class="hero-full-width">
+    <div class="hero-contato">
+        <div class="hero-texture"></div>
+        <div class="hero-content">
+            <p class="hero-label"><i class="bi bi-envelope-paper-fill"></i> Atendimento</p>
+            <h1 class="hero-title">Fale Conosco</h1>
+            <p class="hero-desc">Dúvidas, sugestões ou suporte? Nossa equipe está pronta para ajudar.</p>
         </div>
     </div>
-</div>
+</section>
+
+<main class="contato-container">
+    <div class="contato-wrapper">
+        
+        <div class="contato-form-box">
+            @if (TempData["MensagemSucesso"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+                    <i class="bi bi-check-circle-fill"></i> @TempData["MensagemSucesso"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Contato" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Nome" class="form-label-custom">Nome Completo</label>
+                    <input asp-for="Nome" class="form-control-custom" placeholder="Seu nome completo" />
+                    <span asp-validation-for="Nome" class="text-danger budget-error"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Email" class="form-label-custom">Endereço de E-mail</label>
+                    <input asp-for="Email" class="form-control-custom" placeholder="exemplo@email.com" />
+                    <span asp-validation-for="Email" class="text-danger budget-error"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Assunto" class="form-label-custom">Assunto</label>
+                    <input asp-for="Assunto" class="form-control-custom" placeholder="Qual o motivo do contato?" />
+                    <span asp-validation-for="Assunto" class="text-danger budget-error"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Mensagem" class="form-label-custom">Mensagem</label>
+                    <textarea asp-for="Mensagem" class="form-control-custom" rows="5" placeholder="Escreva sua mensagem detalhadamente aqui..."></textarea>
+                    <span asp-validation-for="Mensagem" class="text-danger budget-error"></span>
+                </div>
+
+                <button type="submit" class="btn-enviar">Enviar Mensagem</button>
+            </form>
+        </div>
+
+        <aside class="contato-info-box">
+            <h3 class="info-title">Nossos Canais</h3>
+            <div class="info-divider"></div>
+            
+            <div class="info-item">
+                <i class="bi bi-geo-alt-fill info-icon"></i>
+                <div class="info-text">
+                    <h5>Endereço</h5>
+                    <p>SIN Trecho 1 SAI/SO Área 6580 - Guará, Brasília - DF, 71219-900</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <i class="bi bi-telephone-fill info-icon"></i>
+                <div class="info-text">
+                    <h5>Telefone</h5>
+                    <p>06140034137</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <i class="bi bi-envelope-open-fill info-icon"></i>
+                <div class="info-text">
+                    <h5>E-mail Direto</h5>
+                    <p>contato@biblioteca.com</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <i class="bi bi-clock-fill info-icon"></i>
+                <div class="info-text">
+                    <h5>Horário de Atendimento</h5>
+                    <p>Segunda a Domingo: 8h às 18h</p>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+</main>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    /* ── Base & Tipografia Clássica ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: #fbf9f4; /* Fundo Marfim */
+        color: #2b2520;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Força o container do Hero a ignorar margens laterais do layout pai */
+    .hero-full-width {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+    }
+
+    /* ── Hero Customizado ── */
+    .hero-contato {
+        position: relative;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('/images/biblioteca-bg.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 120px 40px 110px; 
+        overflow: hidden;
+        border-bottom: 4px solid #c5a059; /* Ouro Velho */
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-texture {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            radial-gradient(circle at 15% 85%, rgba(197, 160, 89, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+        z-index: 1;
+    }
+
+    .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #c5a059; 
+        margin-bottom: 18px;
+    }
+
+    .hero-title {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 700;
+        line-height: 1.25;
+        color: #fbf9f4;
+        margin: 0 0 16px;
+        letter-spacing: -0.01em;
+        text-shadow: 0 3px 10px rgba(0,0,0,0.6); 
+    }
+
+    .hero-desc {
+        font-family: 'Georgia', serif;
+        font-style: italic;
+        font-size: 1.1rem;
+        color: #e2edea; 
+        margin: 0;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    /* ── Elementos de Layout ── */
+    .contato-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 60px 24px 80px;
+    }
+
+    /* Divide a tela em duas partes em desktops (Formulário + Infos) */
+    .contato-wrapper {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* ── Caixa do Formulário ── */
+    .contato-form-box {
+        background: #fff;
+        border: 1px solid #e6ded2;
+        border-radius: 6px;
+        padding: 40px;
+        box-shadow: 0 4px 12px rgba(43, 37, 32, 0.04);
+    }
+
+    .form-group-custom {
+        margin-bottom: 24px;
+    }
+
+    .form-label-custom {
+        display: block;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1e352f; /* Verde Escuro */
+        margin-bottom: 8px;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #dcd3c5;
+        border-radius: 4px;
+        background-color: #faf8f5;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.95rem;
+        color: #2b2520;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .form-control-custom:focus {
+        border-color: #1e352f;
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(30, 53, 47, 0.08);
+    }
+
+    .budget-error {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.8rem;
+        display: block;
+        margin-top: 4px;
+    }
+
+    /* Botão Enviar em Ouro Velho */
+    .btn-enviar {
+        width: 100%;
+        background: #c5a059;
+        color: #1e352f;
+        border: none;
+        padding: 15px;
+        border-radius: 4px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.2);
+    }
+
+    .btn-enviar:hover {
+        background: #b38f47;
+        color: #fbf9f4;
+        transform: translateY(-1px);
+    }
+
+    /* Alerta customizado */
+    .custom-alert {
+        background-color: #e9efe1;
+        border-color: #cbd8bd;
+        color: #1e352f;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        margin-bottom: 24px;
+    }
+
+    /* ── Bloco Lateral de Infos ── */
+    .contato-info-box {
+        background: linear-gradient(135deg, #ffffff 80%, #faf6ee 100%);
+        border: 1px solid #e6ded2;
+        border-radius: 6px;
+        padding: 35px 30px;
+        box-shadow: 0 3px 10px rgba(43, 37, 32, 0.03);
+    }
+
+    .info-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1e352f;
+        margin: 0 0 12px 0;
+    }
+
+    .info-divider {
+        height: 2px;
+        background-color: #1e352f;
+        width: 40px;
+        margin-bottom: 28px;
+    }
+
+    .info-item {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-icon {
+        font-size: 1.3rem;
+        color: #c5a059; /* Ícones em Ouro Velho */
+        margin-top: 2px;
+    }
+
+    .info-text h5 {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1e352f;
+        margin: 0 0 4px 0;
+    }
+
+    .info-text p {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.88rem;
+        color: #615349;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* ── Responsividade Dinâmica (Com @@ para evitar o erro do C#) ── */
+    @@media (max-width: 850px) {
+        .contato-wrapper { grid-template-columns: 1fr; gap: 30px; }
+    }
+
+    @@media (max-width: 480px) {
+        .contato-form-box { padding: 24px; }
+        .hero-contato { padding: 90px 20px 80px; }
+    }
+</style>

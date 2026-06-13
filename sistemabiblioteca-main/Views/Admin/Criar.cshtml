@@ -1,40 +1,259 @@
 @model sistemabiblioteca.Models.Produto
+@{
+    ViewData["Title"] = "Formulário de Produto";
+}
 
-<h1>Novo Livro</h1>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<form asp-action="Criar" method="post">
+<div class="form-page-container">
+    <div class="form-card-box">
+        
+        <div class="form-top-spine"></div>
+        
+        <div class="form-card-header">
+            <h2><i class="bi bi-journal-bookmark-fill"></i> Cadastro de Obra</h2>
+            <p>Preencha os campos abaixo com as informações detalhadas do item.</p>
+        </div>
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="@ViewContext.RouteData.Values["action"]" method="post" class="classic-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="mb-3">
-        <label>Nome</label>
-        <input asp-for="Nome" class="form-control" />
-        <span asp-validation-for="Nome" class="text-danger"></span>
+            <div class="form-group-custom">
+                <label asp-for="Nome" class="form-label-custom">Título / Nome</label>
+                <input asp-for="Nome" class="form-control-custom" placeholder="Digite o nome do produto ou título do livro..." />
+                <span asp-validation-for="Nome" class="text-danger validation-error"></span>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="Descricao" class="form-label-custom">Descrição / Sinopse</label>
+                <textarea asp-for="Descricao" class="form-control-custom" rows="4" placeholder="Escreva uma breve descrição ou resumo..."></textarea>
+                <span asp-validation-for="Descricao" class="text-danger validation-error"></span>
+            </div>
+
+            <div class="form-row-custom">
+                <div class="form-group-custom">
+                    <label asp-for="Preco" class="form-label-custom">Preço de Venda</label>
+                    <div class="input-currency-wrapper">
+                        <span class="currency-symbol">R$</span>
+                        <input asp-for="Preco" class="form-control-custom padding-currency" placeholder="0,00" type="text" />
+                    </div>
+                    <span asp-validation-for="Preco" class="text-danger validation-error"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Categoria" class="form-label-custom">Categoria / Gênero</label>
+                    <input asp-for="Categoria" class="form-control-custom" placeholder="Ex: Romance, Didático, Brinde..." />
+                    <span asp-validation-for="Categoria" class="text-danger validation-error"></span>
+                </div>
+            </div>
+
+            <div class="form-actions-bar">
+                <button type="submit" class="btn-salvar">
+                    <i class="bi bi-check2-circle"></i> Salvar Registro
+                </button>
+                <a asp-action="Index" class="btn-cancelar">Cancelar</a>
+            </div>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label>Descrição</label>
-        <input asp-for="Descricao" class="form-control" />
-        <span asp-validation-for="Descricao" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label>Preço</label>
-        <input asp-for="Preco" class="form-control" />
-        <span asp-validation-for="Preco" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label>Categoria</label>
-        <input asp-for="Categoria" class="form-control" />
-        <span asp-validation-for="Categoria" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Salvar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-
-</form>
+</div>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
+
+<style>
+    /* ── Base & Tipografia Clássica ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: #fbf9f4; /* Fundo Marfim idêntico ao restante do sistema */
+        color: #2b2520;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Contêiner de Centralização da Página */
+    .form-page-container {
+        max-width: 800px;
+        margin: 50px auto 80px;
+        padding: 0 24px;
+    }
+
+    /* Caixa Principal do Formulário */
+    .form-card-box {
+        background: #fff;
+        border: 1px solid #e6ded2;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(43, 37, 32, 0.05);
+    }
+
+    /* Lombada decorativa superior em Verde Clássico */
+    .form-top-spine {
+        height: 8px;
+        background: linear-gradient(90deg, #142420 0%, #1e352f 60%, #29463f 100%);
+    }
+
+    /* Cabeçalho do Card */
+    .form-card-header {
+        padding: 35px 40px 20px;
+        border-bottom: 1px solid #f2ede4;
+    }
+
+    .form-card-header h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1e352f; /* Verde Escuro */
+        margin: 0 0 8px 0;
+        letter-spacing: -0.01em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-card-header p {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        color: #8c7e74;
+        margin: 0;
+    }
+
+    /* Estrutura Interna do Formulário */
+    .classic-form {
+        padding: 30px 40px 40px;
+    }
+
+    .form-group-custom {
+        margin-bottom: 22px;
+        flex: 1;
+    }
+
+    /* Linha dividida para Preço e Categoria lado a lado */
+    .form-row-custom {
+        display: flex;
+        gap: 24px;
+    }
+
+    .form-label-custom {
+        display: block;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #1e352f;
+        margin-bottom: 8px;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #dcd3c5;
+        border-radius: 4px;
+        background-color: #faf8f5;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.95rem;
+        color: #2b2520;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .form-control-custom:focus {
+        border-color: #1e352f;
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(30, 53, 47, 0.08);
+    }
+
+    /* Input especial de moeda */
+    .input-currency-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 14px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #8c7e74;
+        pointer-events: none;
+    }
+
+    .padding-currency {
+        padding-left: 42px;
+    }
+
+    /* Erros de Validação */
+    .validation-error {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.8rem;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* ── Barra de Ações (Botões) ── */
+    .form-actions-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 35px;
+        padding-top: 25px;
+        border-top: 1px solid #f2ede4;
+    }
+
+    /* Botão Salvar em Ouro Velho */
+    .btn-salvar {
+        background: #c5a059;
+        color: #1e352f;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 4px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.2);
+    }
+
+    .btn-salvar:hover {
+        background: #b38f47;
+        color: #fbf9f4;
+        transform: translateY(-1px);
+    }
+
+    /* Botão Cancelar Minimalista */
+    .btn-cancelar {
+        background: transparent;
+        color: #706255;
+        border: 1px solid #dcd3c5;
+        padding: 13px 24px;
+        border-radius: 4px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-cancelar:hover {
+        background: #f2ede4;
+        color: #2b2520;
+        border-color: #c4b9a6;
+    }
+
+    /* ── Responsividade Dinâmica (Utilizando @@ para evitar erros do Razor) ── */
+    @@media (max-width: 600px) {
+        .form-row-custom { flex-direction: column; gap: 0; }
+        .classic-form { padding: 20px; }
+        .form-card-header { padding: 25px 20px 15px; }
+        .form-actions-bar { flex-direction: column; width: 100%; }
+        .btn-salvar, .btn-cancelar { width: 100%; text-align: center; justify-content: center; }
+    }
+</style>

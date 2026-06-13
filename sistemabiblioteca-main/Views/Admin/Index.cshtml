@@ -1,105 +1,463 @@
 @model List<sistemabiblioteca.Models.Produto>
+@{
+    ViewData["Title"] = "Gerenciamento de Acervo";
+}
 
-<div class="container mt-5">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <div class="hero-section library-shadow">
-        <h1>Biblioteca Universitária</h1>
-        <p>Gerenciamento inteligente de livros e acervo acadêmico</p>
+<section class="hero-full-width">
+    <div class="hero-index">
+        <div class="hero-texture"></div>
+        <div class="hero-content">
+            <p class="hero-label"><i class="bi bi-shield-lock-fill"></i> Painel de Controle</p>
+            <h1 class="hero-title">Biblioteca Universitária</h1>
+            <p class="hero-desc">Gerenciamento inteligente de livros e acervo acadêmico</p>
+        </div>
     </div>
+</section>
 
-    <div class="admin-container">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <h2 class="admin-title">📚 Lista de Livros</h2>
-
-            <a asp-action="Criar" class="btn btn-success">
-                + Novo Livro
+<main class="admin-page-container">
+    <div class="admin-card-box">
+        
+        <div class="admin-control-header">
+            <div class="header-left">
+                <h2 class="admin-panel-title"><i class="bi bi-collection-fill"></i> Lista de Livros</h2>
+                <p class="admin-panel-subtitle">Gerencie as obras ativas no sistema</p>
+            </div>
+            <a asp-action="Criar" class="btn-novo-livro">
+                <i class="bi bi-plus-lg"></i> Novo Livro
             </a>
-
         </div>
 
-        <form method="get" class="mb-4">
+        <div class="admin-search-wrapper">
+            <form method="get" class="admin-search-form">
+                <div class="search-input-box">
+                    <i class="bi bi-search search-inner-icon"></i>
+                    <input type="text" name="busca" placeholder="Buscar livro por título, descrição ou categoria..." value="@Context.Request.Query["busca"]" />
+                </div>
+                <button type="submit" class="btn-filtrar">Buscar</button>
+            </form>
+        </div>
 
-            <div class="input-group">
-
-                <input type="text"
-                       name="busca"
-                       class="form-control"
-                       placeholder="Buscar livro..." />
-
-                <button type="submit" class="btn btn-primary">
-                    Buscar
-                </button>
-
-            </div>
-
-        </form>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
-
+        <div class="table-responsive-custom">
+            <table class="table-classic">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Livro</th>
+                        <th style="width: 70px;">ID</th>
+                        <th>Livro / Título</th>
                         <th>Descrição</th>
-                        <th>Preço</th>
-                        <th>Categoria</th>
-                        <th class="text-center">Ações</th>
+                        <th style="width: 120px;">Preço</th>
+                        <th style="width: 150px;">Categoria</th>
+                        <th style="width: 180px;" class="text-center">Ações</th>
                     </tr>
                 </thead>
-
                 <tbody>
-
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="td-id">#@item.Id</td>
+                                <td>
+                                    <span class="book-title-cell">@item.Nome</span>
+                                </td>
+                                <td class="td-desc">@item.Descricao</td>
+                                <td class="td-price">@item.Preco.ToString("C")</td>
+                                <td>
+                                    <span class="badge-category">@item.Categoria</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="action-buttons-group">
+                                        <a asp-action="Editar" asp-route-id="@item.Id" class="btn-action-edit" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i> Editar
+                                        </a>
+                                        <a asp-action="Excluir" asp-route-id="@item.Id" class="btn-action-delete" title="Excluir">
+                                            <i class="bi bi-trash3-fill"></i> Excluir
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-
-                            <td>@item.Id</td>
-
-                            <td>
-                                <strong>@item.Nome</strong>
+                            <td colspan="6" class="table-empty-state">
+                                <i class="bi bi-folder-x"></i>
+                                <p>Nenhuma obra encontrada no acervo.</p>
                             </td>
-
-                            <td>@item.Descricao</td>
-
-                            <td>
-                                R$ @item.Preco
-                            </td>
-
-                            <td>
-                                <span class="badge badge-info">
-                                    @item.Categoria
-                                </span>
-                            </td>
-
-                            <td class="text-center">
-
-                                <a asp-action="Editar"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-warning btn-sm">
-                                    Editar
-                                </a>
-
-                                <a asp-action="Excluir"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-danger btn-sm">
-                                    Excluir
-                                </a>
-
-                            </td>
-
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
 
     </div>
+</main>
 
-</div>
+<style>
+    /* ── Base & Tipografia Clássica ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: #fbf9f4; /* Fundo Marfim */
+        color: #2b2520;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Força o container do Hero a ignorar margens laterais */
+    .hero-full-width {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+    }
+
+    /* ── Hero Administrativo ── */
+    .hero-index {
+        position: relative;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('/images/biblioteca-bg.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 110px 40px 100px; 
+        overflow: hidden;
+        border-bottom: 4px solid #c5a059; /* Ouro Velho */
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-texture {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            radial-gradient(circle at 15% 85%, rgba(197, 160, 89, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+        z-index: 1;
+    }
+
+    .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #c5a059; 
+        margin-bottom: 16px;
+    }
+
+    .hero-title {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 700;
+        line-height: 1.25;
+        color: #fbf9f4;
+        margin: 0 0 16px;
+        letter-spacing: -0.01em;
+        text-shadow: 0 3px 10px rgba(0,0,0,0.6); 
+    }
+
+    .hero-desc {
+        font-family: 'Georgia', serif;
+        font-style: italic;
+        font-size: 1.1rem;
+        color: #e2edea; 
+        margin: 0;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    /* ── Conteúdo do Painel ── */
+    .admin-page-container {
+        max-width: 1300px;
+        margin: 50px auto 80px;
+        padding: 0 24px;
+    }
+
+    .admin-card-box {
+        background: #fff;
+        border: 1px solid #e6ded2;
+        border-radius: 6px;
+        box-shadow: 0 4px 16px rgba(43, 37, 32, 0.04);
+        overflow: hidden;
+    }
+
+    /* Topo do painel */
+    .admin-control-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 35px 40px 25px;
+        border-bottom: 1px solid #f2ede4;
+        gap: 20px;
+    }
+
+    .admin-panel-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e352f; /* Verde Escuro */
+        margin: 0 0 6px 0;
+        letter-spacing: -0.01em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .admin-panel-subtitle {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.88rem;
+        color: #8c7e74;
+        margin: 0;
+    }
+
+    /* Botão Novo Livro (Ouro Velho) */
+    .btn-novo-livro {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #c5a059;
+        color: #1e352f;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-decoration: none;
+        letter-spacing: 0.03em;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.15);
+    }
+
+    .btn-novo-livro:hover {
+        background: #b38f47;
+        color: #fbf9f4;
+        transform: translateY(-1px);
+    }
+
+    /* ── Barra de Pesquisa Interna ── */
+    .admin-search-wrapper {
+        padding: 24px 40px;
+        background-color: #faf8f5;
+        border-bottom: 1px solid #f2ede4;
+    }
+
+    .admin-search-form {
+        display: flex;
+        gap: 12px;
+        max-width: 650px;
+    }
+
+    .search-input-box {
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-inner-icon {
+        position: absolute;
+        left: 14px;
+        color: #a6988d;
+        font-size: 0.95rem;
+    }
+
+    .search-input-box input {
+        width: 100%;
+        padding: 11px 16px 11px 40px;
+        border: 1px solid #dcd3c5;
+        border-radius: 4px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        color: #2b2520;
+        outline: none;
+        background-color: #fff;
+        transition: border-color 0.2s;
+    }
+
+    .search-input-box input:focus {
+        border-color: #1e352f;
+    }
+
+    .btn-filtrar {
+        background: #1e352f; /* Verde Escuro */
+        color: #fbf9f4;
+        border: none;
+        padding: 0 24px;
+        border-radius: 4px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-filtrar:hover {
+        background: #142420;
+    }
+
+    /* ── Tabela Customizada Estilo Biblioteca ── */
+    .table-responsive-custom {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table-classic {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        background: #fff;
+    }
+
+    .table-classic th {
+        background-color: #1e352f; /* Cabeçalho Verde */
+        color: #faf6ee;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 16px 24px;
+        border: none;
+    }
+
+    .table-classic td {
+        padding: 18px 24px;
+        border-bottom: 1px solid #f2ede4;
+        color: #4a3e3d;
+        font-size: 0.95rem;
+        vertical-align: middle;
+    }
+
+    .table-classic tbody tr:hover {
+        background-color: #faf8f4; /* Efeito hover suave */
+    }
+
+    .td-id {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.85rem;
+        color: #8c7e74;
+        font-weight: 600;
+    }
+
+    .book-title-cell {
+        font-weight: 700;
+        color: #1e352f;
+        font-size: 1rem;
+    }
+
+    .td-desc {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.88rem;
+        color: #615349;
+        max-width: 320px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .td-price {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-weight: 600;
+        color: #2b2520;
+    }
+
+    /* Emblema da categoria */
+    .badge-category {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #1e352f;
+        background-color: #ebdcb9; /* Tom pastel suave */
+        padding: 4px 12px;
+        border-radius: 4px;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    /* Agrupamento de botões de Ação */
+    .action-buttons-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-action-edit, .btn-action-delete {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        padding: 6px 14px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+
+    /* Botão Editar */
+    .btn-action-edit {
+        background-color: transparent;
+        color: #c5a059;
+        border: 1px solid #c5a059;
+    }
+
+    .btn-action-edit:hover {
+        background-color: #c5a059;
+        color: #fff;
+    }
+
+    /* Botão Excluir */
+    .btn-action-delete {
+        background-color: transparent;
+        color: #b84a39;
+        border: 1px solid #ebd0cc;
+    }
+
+    .btn-action-delete:hover {
+        background-color: #b84a39;
+        color: #fff;
+        border-color: #b84a39;
+    }
+
+    /* Estado da Tabela Vazia */
+    .table-empty-state {
+        text-align: center;
+        padding: 60px 20px !important;
+        color: #a6988d;
+    }
+
+    .table-empty-state i {
+        font-size: 2rem;
+        margin-bottom: 8px;
+        display: inline-block;
+    }
+
+    .table-empty-state p {
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 0.9rem;
+    }
+
+    /* ── Responsividade Dinâmica (Com @@ para evitar o erro do Razor) ── */
+    @@media (max-width: 768px) {
+        .admin-control-header { flex-direction: column; align-items: flex-start; padding: 25px 20px; }
+        .btn-novo-livro { width: 100%; text-align: center; justify-content: center; }
+        .admin-search-wrapper { padding: 20px; }
+        .admin-search-form { flex-direction: column; width: 100%; }
+        .btn-filtrar { padding: 12px; }
+        .table-classic th, .table-classic td { padding: 12px 14px; }
+    }
+</style>
