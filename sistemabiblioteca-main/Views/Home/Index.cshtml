@@ -61,7 +61,7 @@
 </main>
 
 <style>
-    /* ── Base & Tipografia Clássica ── */
+    
     *, *::before, *::after { box-sizing: border-box; }
 
     body {
@@ -72,7 +72,7 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* Força o container do Hero a ignorar margens laterais do layout caso exista alguma */
+
     .hero-full-width {
         width: 100vw;
         position: relative;
@@ -82,7 +82,7 @@
         margin-right: -50vw;
     }
 
-    /* ── Hero (Borda a Borda) ── */
+
     .hero {
         position: relative;
         background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('/images/biblioteca-bg.png');
@@ -229,14 +229,14 @@
         gap: 6px;
     }
 
-    /* LINHAS ALTERADAS AQUI: Nova grade com 4 colunas mais largas e espaçadas */
+    
     .catalog-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(260px, 1fr));
         gap: 32px; 
     }
 
-    /* Responsividade corrigida com @@ para não dar erro no dotnet run */
+    
     @@media (max-width: 1200px) {
         .catalog-grid { grid-template-columns: repeat(3, minmax(240px, 1fr)); }
     }
@@ -247,7 +247,7 @@
         .catalog-grid { grid-template-columns: 1fr; }
     }
 
-    /* LINHA ALTERADA AQUI: Card "Livro" ajustado na altura proporcional à nova largura */
+    
     .livro {
         display: flex;
         background: #fff;
