@@ -4,348 +4,79 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<section class="hero-full-width">
-    <div class="hero-sobre">
-        <div class="hero-texture"></div>
-        <div class="hero-content">
-            <p class="hero-label"><i class="bi bi-book-half"></i> Biblioteca Digital</p>
-            <h1 class="hero-title">Sobre a Nossa Biblioteca</h1>
-            <p class="hero-desc">Transformando vidas através da leitura desde 2023</p>
-        </div>
-    </div>
+<section class="hero">
+    <p class="hero-label"><i class="bi bi-book-half"></i> Lenda da Biblioteca</p>
+    <h1>Sobre a <span>Nossa Biblioteca</span></h1>
+    <p>Transformando aventureiros em mestres do conhecimento desde 2023</p>
 </section>
 
 <main class="sobre-container">
-    
-    <section class="sobre-intro animate-fade">
-        <p class="lead-text">
-            Bem-vindo à <strong>Biblioteca do Conhecimento</strong>, seu portal para um universo de informações e histórias. 
-            Nossa missão é democratizar o acesso à leitura e ao aprendizado, oferecendo um acervo diversificado que atende a todos os gostos e idades.
-        </p>
-        <p class="normal-text">
-            Acreditamos no poder transformador dos livros e na importância de fomentar a cultura e a educação. 
-            Nosso espaço é um convite à descoberta, ao estudo e ao lazer, com ambientes acolhedores e recursos modernos para conectar você ao futuro.
-        </p>
+    <section class="sobre-intro">
+        <p class="lead-text">Bem-vindo à <strong>Biblioteca Arcana</strong>, seu portal para um universo de conhecimento e histórias épicas. Nossa missão é democratizar o acesso à leitura e ao aprendizado para todos os aventureiros.</p>
+        <p class="normal-text">Acreditamos no poder transformador dos livros e na importância de fomentar a cultura e a educação. Nosso espaço é um convite à descoberta, ao estudo e ao lazer — com recursos modernos para conectar você ao próximo nível do conhecimento.</p>
     </section>
 
-    <div class="sobre-divider-full"></div>
+    <div class="sobre-divider"></div>
 
     <section class="sobre-mv">
         <div class="mv-card">
-            <div class="icon-square">
-                <i class="bi bi-rocket-takeoff-fill"></i>
-            </div>
+            <div class="mv-icon"><i class="bi bi-rocket-takeoff-fill"></i></div>
             <h4>Nossa Missão</h4>
             <p>Inovar na disseminação do conhecimento, integrando a comunidade e facilitando o acesso à cultura.</p>
         </div>
-
         <div class="mv-card">
-            <div class="icon-square">
-                <i class="bi bi-eye-fill"></i>
-            </div>
+            <div class="mv-icon"><i class="bi bi-eye-fill"></i></div>
             <h4>Nossa Visão</h4>
             <p>Ser reconhecida como um centro de excelência em cultura e educação, inspirando a paixão constante pelo aprendizado.</p>
         </div>
     </section>
 
     <section class="sobre-valores">
-        <h3 class="secao-titulo">Nossos Valores</h3>
-        
+        <h3 class="secao-titulo">⚜️ Nossos Valores</h3>
         <div class="valores-grid">
-            <div class="valor-card">
-                <i class="bi bi-universal-access valor-icon"></i>
-                <h6>Acessibilidade</h6>
-                <p>Cultura para todos, sem barreiras.</p>
-            </div>
-
-            <div class="valor-card">
-                <i class="bi bi-cpu valor-icon"></i>
-                <h6>Inovação</h6>
-                <p>Tecnologia a serviço da leitura.</p>
-            </div>
-
-            <div class="valor-card">
-                <i class="bi bi-people-fill valor-icon"></i>
-                <h6>Comunidade</h6>
-                <p>Espaço de união e partilha.</p>
-            </div>
-
-            <div class="valor-card">
-                <i class="bi bi-heart-pulse-fill valor-icon"></i>
-                <h6>Respeito</h6>
-                <p>Valorização da diversidade de ideias.</p>
-            </div>
+            <div class="valor-card"><i class="bi bi-universal-access valor-icon"></i><h6>Acessibilidade</h6><p>Cultura para todos, sem barreiras.</p></div>
+            <div class="valor-card"><i class="bi bi-cpu valor-icon"></i><h6>Inovação</h6><p>Tecnologia a serviço da leitura.</p></div>
+            <div class="valor-card"><i class="bi bi-people-fill valor-icon"></i><h6>Comunidade</h6><p>Espaço de união e partilha.</p></div>
+            <div class="valor-card"><i class="bi bi-heart-pulse-fill valor-icon"></i><h6>Respeito</h6><p>Valorização da diversidade de ideias.</p></div>
         </div>
     </section>
 
     <section class="sobre-cta">
-        <p>Explore nossas coleções, participe de nossos eventos e faça parte da nossa comunidade.</p>
-        <a href="/Home/Produtos" class="btn-explorar">Explorar Acervo</a>
+        <p>Explore nossas coleções, participe de eventos e faça parte da nossa guilda.</p>
+        <a href="/Home/Produtos" class="btn-explorar">⚔️ Explorar Acervo</a>
     </section>
-
 </main>
 
 <style>
-    /* ── Base & Tipografia Clássica ── */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-        margin: 0;
-        background: #fbf9f4; /* Tom de papel marfim idêntico à Home */
-        color: #2b2520;
-        font-family: 'Georgia', 'Times New Roman', serif;
-        -webkit-font-smoothing: antialiased;
-    }
-
-    /* Força o container a ignorar as margens do layout pai se houver */
-    .hero-full-width {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-    }
-
-    /* ── Hero Estilo Biblioteca ── */
-    .hero-sobre {
-        position: relative;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('/images/biblioteca-bg.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        padding: 120px 40px 110px; 
-        overflow: hidden;
-        border-bottom: 4px solid #c5a059; /* Ouro Velho */
-        width: 100%;
-        text-align: center;
-    }
-
-    .hero-texture {
-        position: absolute;
-        inset: 0;
-        background-image: 
-            radial-gradient(circle at 15% 85%, rgba(197, 160, 89, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
-        pointer-events: none;
-    }
-
-    .hero-content {
-        position: relative;
-        max-width: 800px;
-        margin: 0 auto;
-        z-index: 1;
-    }
-
-    .hero-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: #c5a059; 
-        margin-bottom: 18px;
-    }
-
-    .hero-title {
-        font-size: clamp(1.8rem, 4vw, 3rem);
-        font-weight: 700;
-        line-height: 1.25;
-        color: #fbf9f4;
-        margin: 0 0 16px;
-        letter-spacing: -0.01em;
-        text-shadow: 0 3px 10px rgba(0,0,0,0.6); 
-    }
-
-    .hero-desc {
-        font-family: 'Georgia', serif;
-        font-style: italic;
-        font-size: 1.1rem;
-        color: #e2edea; 
-        margin: 0;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    }
-
-    /* ── Layout do Conteúdo Container ── */
-    .sobre-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 60px 24px 80px;
-    }
-
-    /* Introdução Textos */
-    .sobre-intro {
-        text-align: center;
-        max-width: 800px;
-        margin: 0 auto 45px;
-    }
-
-    .lead-text {
-        font-size: 1.25rem;
-        line-height: 1.6;
-        color: #4a3e3d;
-        margin-bottom: 20px;
-    }
-
-    .normal-text {
-        font-size: 1.05rem;
-        line-height: 1.65;
-        color: #615349;
-    }
-
-    /* Divisória clássica em Verde Escuro */
-    .sobre-divider-full {
-        height: 2px;
-        background-color: #1e352f;
-        margin-bottom: 50px;
-        opacity: 0.8;
-    }
-
-    /* ── Missão e Visão (Estilo Cards de Livro) ── */
-    .sobre-mv {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        margin-bottom: 60px;
-    }
-
-    .mv-card {
-        background: #fff;
-        border: 1px solid #e6ded2;
-        border-radius: 6px;
-        padding: 35px 30px;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(43, 37, 32, 0.04);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .mv-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(30, 53, 47, 0.08);
-    }
-
-    .mv-card .icon-square {
-        font-size: 2rem;
-        color: #c5a059; /* Ícones em Ouro Velho */
-        margin-bottom: 15px;
-    }
-
-    .mv-card h4 {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #1e352f; /* Título em Verde Clássico */
-        margin: 0 0 12px 0;
-    }
-
-    .mv-card p {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: #615349;
-        margin: 0;
-    }
-
-    /* ── Seção de Valores Clássica ── */
-    .secao-titulo {
-        text-align: center;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #1e352f;
-        margin-bottom: 35px;
-        letter-spacing: -0.01em;
-    }
-
-    .valores-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        margin-bottom: 60px;
-    }
-
-    .valor-card {
-        background: linear-gradient(135deg, #ffffff 80%, #faf6ee 100%);
-        border: 1px solid #e6ded2;
-        border-radius: 6px;
-        padding: 24px 16px;
-        text-align: center;
-        box-shadow: 0 3px 10px rgba(43, 37, 32, 0.03);
-    }
-
-    .valor-icon {
-        font-size: 1.8rem;
-        color: #1e352f; /* Ícones em Verde */
-        margin-bottom: 10px;
-        display: inline-block;
-    }
-
-    .valor-card h6 {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        color: #1e352f;
-        margin: 0 0 6px 0;
-    }
-
-    .valor-card p {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.8rem;
-        color: #8c7e74;
-        margin: 0;
-        line-height: 1.4;
-    }
-
-    /* ── Botão e Chamada de Ação (CTA) ── */
-    .sobre-cta {
-        text-align: center;
-        padding: 20px 0;
-    }
-
-    .sobre-cta p {
-        font-family: 'Georgia', serif;
-        font-style: italic;
-        color: #706255;
-        margin-bottom: 25px;
-        font-size: 1.05rem;
-    }
-
-    .btn-explorar {
-        display: inline-block;
-        background: #c5a059; /* Botão Ouro Velho igual ao Buscar */
-        color: #1e352f;
-        text-decoration: none;
-        border: none;
-        padding: 14px 36px;
-        border-radius: 4px;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 15px rgba(197, 160, 89, 0.2);
-    }
-
-    .btn-explorar:hover {
-        background: #b38f47;
-        color: #fbf9f4;
-        transform: translateY(-2px);
-    }
-
-    /* ── Responsividade Dinâmica (Utilizando @@ para evitar o erro do Razor) ── */
-    @@media (max-width: 992px) {
-        .valores-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    }
-
-    @@media (max-width: 768px) {
-        .sobre-mv { grid-template-columns: 1fr; gap: 24px; }
-        .hero-sobre { padding: 90px 20px 80px; }
-    }
-
-    @@media (max-width: 480px) {
-        .valores-grid { grid-template-columns: 1fr; }
-        .lead-text { font-size: 1.15rem; }
-    }
+    .hero { padding: 5rem 2rem; text-align: center; background: linear-gradient(rgba(18,12,31,0.85), #120c1f), radial-gradient(circle, rgba(58,42,86,0.4) 0%, rgba(18,12,31,1) 70%); border-bottom: 1px solid #3a2a56; }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ffb834; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2.6rem; color: #fff; margin-bottom: 0.8rem; }
+    .hero h1 span { color: #ffb834; }
+    .hero p { font-size: 1.05rem; color: #9c8eb9; max-width: 560px; margin: 0 auto; }
+    .sobre-container { max-width: 1000px; margin: 0 auto; padding: 3.5rem 2rem 5rem; }
+    .sobre-intro { text-align: center; max-width: 800px; margin: 0 auto 3rem; }
+    .lead-text { font-size: 1.2rem; line-height: 1.65; color: #e2daeb; margin-bottom: 16px; }
+    .lead-text strong { color: #ffb834; }
+    .normal-text { font-size: 1rem; line-height: 1.65; color: #9c8eb9; }
+    .sobre-divider { height: 1px; background: #3a2a56; margin-bottom: 3rem; }
+    .sobre-mv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.8rem; margin-bottom: 3.5rem; }
+    .mv-card { background: #1a1429; border: 1px solid #3a2a56; border-radius: 12px; padding: 2.2rem; text-align: center; transition: all 0.3s; }
+    .mv-card:hover { transform: translateY(-5px); border-color: #ffb834; box-shadow: 0 8px 20px rgba(255,184,52,0.1); }
+    .mv-icon { font-size: 2rem; color: #ffb834; margin-bottom: 14px; }
+    .mv-card h4 { font-size: 1.3rem; font-weight: 700; color: #fff; margin: 0 0 10px; }
+    .mv-card p { font-size: 0.92rem; color: #9c8eb9; line-height: 1.5; margin: 0; }
+    .secao-titulo { text-align: center; font-size: 1.5rem; font-weight: 700; color: #ffb834; margin-bottom: 2rem; }
+    .valores-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 3.5rem; }
+    .valor-card { background: #1a1429; border: 1px solid #3a2a56; border-radius: 8px; padding: 1.6rem; text-align: center; transition: all 0.3s; }
+    .valor-card:hover { border-color: #ffb834; }
+    .valor-icon { font-size: 1.8rem; color: #ffb834; margin-bottom: 8px; display: inline-block; }
+    .valor-card h6 { font-size: 0.95rem; font-weight: 700; color: #fff; margin: 0 0 5px; }
+    .valor-card p { font-size: 0.8rem; color: #9c8eb9; margin: 0; }
+    .sobre-cta { text-align: center; padding: 16px 0 30px; }
+    .sobre-cta p { color: #9c8eb9; font-style: italic; margin-bottom: 20px; }
+    .btn-explorar { display: inline-block; background: #ffb834; color: #120c1f; text-decoration: none; padding: 13px 34px; border-radius: 6px; font-size: 0.88rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
+    .btn-explorar:hover { background: #ffca64; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,184,52,0.3); }
+    @@media (max-width: 992px) { .valores-grid { grid-template-columns: repeat(2, 1fr); } }
+    @@media (max-width: 768px) { .sobre-mv { grid-template-columns: 1fr; } .hero { padding: 3.5rem 1.5rem; } }
+    @@media (max-width: 480px) { .valores-grid { grid-template-columns: 1fr; } }
 </style>

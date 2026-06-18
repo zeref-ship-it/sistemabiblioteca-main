@@ -1,26 +1,156 @@
 @{
     ViewData["Title"] = "Login";
 }
-<div class="container mt-5 pt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="text-center mb-4">
-                <h1 class="h3 mb-3 fw-normal">Acesso Administrativo</h1>
-                <p class="text-muted small">Use admin@admin.com / 123</p>
-            </div>
-            <form asp-action="Login" method="post">
-                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-                <div class="form-floating mb-3">
-                    <input type="email" name="email" class="form-control" id="floatingInput" placeholder="nome@exemplo.com">
-                    <label for="floatingInput">E-mail</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="password" name="senha" class="form-control" id="floatingPassword" placeholder="Senha">
-                    <label for="floatingPassword">Senha</label>
-                </div>
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
-                @if(ViewBag.Erro != null) { <p class="text-danger mt-3 text-center">@ViewBag.Erro</p> }
-            </form>
+
+<div class="login-bg">
+    <div class="login-card">
+        <div class="login-top-bar"></div>
+        <div class="login-header">
+            <span class="login-icon">🔮</span>
+            <h2>Acesso à Torre</h2>
+            <p>Apenas aventureiros autorizados podem entrar</p>
         </div>
+        <form asp-action="Login" method="post">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+            <div class="form-group">
+                <label class="form-label">Cristal de Identidade (E-mail)</label>
+                <input type="email" name="email" class="form-control" placeholder="nome@exemplo.com" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Senha Arcana</label>
+                <input type="password" name="senha" class="form-control" placeholder="••••••••" />
+            </div>
+            <p class="hint-text">🧙 Dica: admin@admin.com / 123</p>
+            @if (ViewBag.Erro != null)
+            {
+                <div class="alert-erro">⚠️ @ViewBag.Erro</div>
+            }
+            <button type="submit" class="btn-entrar">⚔️ Invocar Acesso</button>
+        </form>
     </div>
 </div>
+
+<style>
+    body { margin: 0; background: #120c1f; }
+
+    .login-bg {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 50% 40%, rgba(58,42,86,0.35) 0%, #120c1f 70%);
+        padding: 2rem;
+    }
+
+    .login-card {
+        background: #1a1429;
+        border: 1px solid #3a2a56;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 420px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    }
+
+    .login-top-bar {
+        height: 5px;
+        background: linear-gradient(90deg, #ffb834, #ffca64, #ffb834);
+    }
+
+    .login-header {
+        text-align: center;
+        padding: 2.5rem 2rem 1.5rem;
+        border-bottom: 1px solid #3a2a56;
+    }
+
+    .login-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+
+    .login-header h2 {
+        font-size: 1.6rem;
+        color: #ffb834;
+        margin: 0 0 8px;
+        font-family: 'Segoe UI', sans-serif;
+        font-weight: 700;
+    }
+
+    .login-header p {
+        font-size: 0.88rem;
+        color: #9c8eb9;
+        margin: 0;
+    }
+
+    form { padding: 2rem; }
+
+    .form-group { margin-bottom: 1.4rem; }
+
+    .form-label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #ffb834;
+        margin-bottom: 7px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 11px 14px;
+        background: #120c1f;
+        border: 1px solid #3a2a56;
+        border-radius: 6px;
+        color: #e2daeb;
+        font-size: 0.95rem;
+        outline: none;
+        transition: all 0.2s;
+        font-family: 'Segoe UI', sans-serif;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        border-color: #ffb834;
+        box-shadow: 0 0 0 3px rgba(255,184,52,0.12);
+    }
+
+    .form-control::placeholder { color: #9c8eb9; }
+
+    .hint-text {
+        font-size: 0.8rem;
+        color: #9c8eb9;
+        text-align: center;
+        margin-bottom: 16px;
+        font-style: italic;
+    }
+
+    .alert-erro {
+        background: rgba(231,76,60,0.1);
+        border: 1px solid rgba(231,76,60,0.3);
+        color: #e74c3c;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .btn-entrar {
+        width: 100%;
+        background: #ffb834;
+        color: #120c1f;
+        border: none;
+        padding: 14px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .btn-entrar:hover {
+        background: #ffca64;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(255,184,52,0.3);
+    }
+</style>

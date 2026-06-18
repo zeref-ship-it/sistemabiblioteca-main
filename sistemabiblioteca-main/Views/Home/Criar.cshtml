@@ -1,34 +1,66 @@
 @model sistemabiblioteca.Models.Produto
+@{
+    ViewData["Title"] = "Forjar Novo Item";
+}
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Cadastrar Novo Item</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Criar" method="post">
-                        <div class="mb-3">
-                            <label class="form-label">Nome do Produto/Serviço</label>
-                            <input asp-for="Nome" class="form-control" required />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Categoria</label>
-                            <select asp-for="Categoria" class="form-select">
-                                <option value="Produto">Produto</option>
-                                <option value="Serviço">Serviço</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Preço</label>
-                            <input asp-for="Preco" type="number" step="0.01" class="form-control" />
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Salvar</button>
-                        <a asp-action="Index" class="btn btn-link w-100 mt-2 text-muted">Cancelar</a>
-                    </form>
-                </div>
-            </div>
+<section class="hero">
+    <p class="hero-label">⚗️ Forja de Itens</p>
+    <h1>Forjar <span>Novo Artefato</span></h1>
+    <p>Registre um novo produto ou serviço no acervo da biblioteca</p>
+</section>
+
+<div class="criar-wrapper">
+    <div class="criar-card">
+        <div class="criar-header">
+            <span>⚔️</span>
+            <h4>Cadastrar Novo Item</h4>
         </div>
+        <form asp-action="Criar" method="post">
+            <div class="form-group">
+                <label class="form-label">Nome do Produto / Serviço</label>
+                <input asp-for="Nome" class="form-control" placeholder="Ex: Grimório das Sombras" required />
+                <span asp-validation-for="Nome" class="field-error"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select asp-for="Categoria" class="form-control">
+                    <option value="Produto">📦 Produto</option>
+                    <option value="Serviço">⚙️ Serviço</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descrição</label>
+                <textarea asp-for="Descricao" class="form-control" rows="3" placeholder="Descreva o item..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Preço (R$)</label>
+                <input asp-for="Preco" type="number" step="0.01" class="form-control" placeholder="0,00" />
+            </div>
+            <button type="submit" class="btn-enviar">🔮 Forjar Item</button>
+            <a asp-action="Index" class="link-cancel">← Cancelar e voltar</a>
+        </form>
     </div>
 </div>
+
+<style>
+    .hero { padding: 4rem 2rem; text-align: center; background: linear-gradient(rgba(18,12,31,0.85), #120c1f), radial-gradient(circle, rgba(58,42,86,0.4) 0%, rgba(18,12,31,1) 70%); border-bottom: 1px solid #3a2a56; }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ffb834; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2.4rem; color: #fff; margin-bottom: 0.8rem; }
+    .hero h1 span { color: #ffb834; }
+    .hero p { font-size: 1rem; color: #9c8eb9; }
+    .criar-wrapper { display: flex; justify-content: center; padding: 3.5rem 2rem 5rem; }
+    .criar-card { background: #1a1429; border: 1px solid #3a2a56; border-radius: 14px; padding: 2.5rem; width: 100%; max-width: 520px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+    .criar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; padding-bottom: 1.2rem; border-bottom: 1px solid #3a2a56; }
+    .criar-header span { font-size: 1.8rem; }
+    .criar-header h4 { font-size: 1.4rem; color: #ffb834; margin: 0; }
+    .form-group { margin-bottom: 1.4rem; }
+    .form-label { display: block; font-size: 0.88rem; font-weight: 700; color: #ffb834; margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 10px 14px; border: 1px solid #3a2a56; border-radius: 6px; background: #120c1f; color: #e2daeb; font-size: 0.9rem; outline: none; transition: all 0.2s; font-family: inherit; resize: vertical; }
+    .form-control:focus { border-color: #ffb834; box-shadow: 0 0 0 3px rgba(255,184,52,0.12); }
+    .form-control::placeholder { color: #9c8eb9; }
+    .field-error { font-size: 0.8rem; color: #e74c3c; display: block; margin-top: 4px; }
+    .btn-enviar { width: 100%; background: #ffb834; color: #120c1f; border: none; padding: 14px; border-radius: 6px; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+    .btn-enviar:hover { background: #ffca64; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255,184,52,0.3); }
+    .link-cancel { display: block; text-align: center; margin-top: 14px; color: #9c8eb9; font-size: 0.88rem; text-decoration: none; transition: color 0.2s; }
+    .link-cancel:hover { color: #e2daeb; }
+</style>

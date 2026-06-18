@@ -6,26 +6,19 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<section class="hero-full-width">
-    <div class="hero">
-        <div class="hero-texture"></div>
-        <div class="hero-content">
-            <p class="hero-label"><i class="bi bi-box-seam-fill"></i> Loja da Biblioteca</p>
-            <h1 class="hero-title">Nossos Produtos</h1>
-            <p class="hero-desc">Encontre materiais exclusivos, livros físicos e mimos literários</p>
-            
-            <form asp-action="Produtos" method="get" class="hero-search">
-                <i class="bi bi-search search-icon"></i>
-                <input type="text" name="busca" placeholder="Pesquisar por nome ou descrição..." class="hero-input" />
-                <button type="submit" class="hero-btn">Pesquisar</button>
-            </form>
-        </div>
-    </div>
+<section class="hero">
+    <p class="hero-label"><i class="bi bi-bag-heart-fill"></i> Loja da Biblioteca</p>
+    <h1>Nossos <span>Produtos Arcanos</span></h1>
+    <p>Encontre grimórios físicos, artefatos exclusivos e relíquias literárias</p>
+    <form asp-action="Produtos" method="get" class="search-box">
+        <input type="text" name="busca" placeholder="Pesquisar por nome ou descrição..." />
+        <button type="submit">🔮 Conjurar</button>
+    </form>
 </section>
 
-<main class="catalog">
+<main>
     <div class="catalog-header">
-        <h2 class="catalog-title">Itens Disponíveis</h2>
+        <h2 class="catalog-title">⚗️ Itens Disponíveis</h2>
         <span class="catalog-count"><i class="bi bi-tags-fill"></i> @(Model?.Count ?? 0) produtos encontrados</span>
     </div>
 
@@ -36,16 +29,13 @@
             {
                 <article class="produto-card">
                     <div class="produto-top-bar"></div>
-                    
                     <div class="produto-body">
                         <div class="produto-meta">
                             <span class="produto-categoria">@produto.Categoria</span>
                             <i class="bi bi-bookmark-star-fill star-icon"></i>
                         </div>
-                        
                         <h3 class="produto-nome">@produto.Nome</h3>
                         <p class="produto-descricao">@produto.Descricao</p>
-                        
                         <div class="produto-footer">
                             <span class="produto-preco">@produto.Preco.ToString("C")</span>
                             <a href="#" class="btn-detalhes">Ver Detalhes</a>
@@ -57,331 +47,59 @@
         else
         {
             <div class="catalog-empty">
-                <i class="bi bi-bag-x empty-icon"></i>
-                <p>Nenhum produto foi encontrado no momento.</p>
+                <span class="empty-icon">📦</span>
+                <p>Nenhum artefato foi encontrado no momento.</p>
             </div>
         }
     </div>
 </main>
 
 <style>
-    /* ── Base & Tipografia Clássica ── */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-        margin: 0;
-        background: #fbf9f4; /* Fundo Marfim */
-        color: #2b2520;
-        font-family: 'Georgia', 'Times New Roman', serif;
-        -webkit-font-smoothing: antialiased;
-    }
-
-    /* Força o container do Hero a ignorar as margens do layout pai */
-    .hero-full-width {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-    }
-
-    /* ── Hero (Borda a Borda) ── */
     .hero {
-        position: relative;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('/images/imagemprodutos.png');
+        padding: 5rem 2rem;
+        text-align: center;
+        background: linear-gradient(rgba(18,12,31,0.80), rgba(18,12,31,0.85)), url('/images/produtos.png');
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
-        padding: 140px 40px 130px; 
-        overflow: hidden;
-        border-bottom: 4px solid #c5a059; /* Ouro Velho */
-        width: 100%;
+        border-bottom: 1px solid #3a2a56;
     }
-
-    .hero-texture {
-        position: absolute;
-        inset: 0;
-        background-image: 
-            radial-gradient(circle at 15% 85%, rgba(197, 160, 89, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
-        pointer-events: none;
-    }
-
-    .hero-content {
-        position: relative;
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
-        z-index: 1;
-    }
-
     .hero-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: #c5a059; 
-        margin-bottom: 24px;
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+        text-transform: uppercase; color: #ffb834; margin-bottom: 1rem;
     }
-
-    .hero-title {
-        font-size: clamp(1.8rem, 4vw, 3rem);
-        font-weight: 700;
-        line-height: 1.25;
-        color: #fbf9f4;
-        margin: 0 0 20px;
-        letter-spacing: -0.01em;
-        text-shadow: 0 3px 10px rgba(0,0,0,0.6); 
+    .hero h1 { font-size: 2.6rem; color: #fff; margin-bottom: 0.8rem; }
+    .hero h1 span { color: #ffb834; }
+    .hero p { font-size: 1.05rem; color: #9c8eb9; max-width: 560px; margin: 0 auto 1.8rem; }
+    .search-box {
+        display: flex; max-width: 500px; margin: 0 auto;
+        border: 2px solid #3a2a56; border-radius: 8px; overflow: hidden; transition: all 0.3s;
     }
-
-    .hero-desc {
-        font-family: 'Georgia', serif;
-        font-style: italic;
-        font-size: 1.1rem;
-        color: #e2edea; 
-        margin: 0 0 36px;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    }
-
-    /* Barra de pesquisa refinada */
-    .hero-search {
-        display: flex;
-        align-items: center;
-        background: #fbf9f4;
-        border-radius: 8px;
-        overflow: hidden;
-        max-width: 560px;
-        margin: 0 auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-        border: 1px solid rgba(197, 160, 89, 0.3);
-        padding-left: 16px;
-    }
-
-    .search-icon {
-        color: #8c7e74;
-        font-size: 1rem;
-    }
-
-    .hero-input {
-        flex: 1;
-        border: none;
-        outline: none;
-        background: transparent;
-        padding: 16px 12px;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.95rem;
-        color: #2b2520;
-    }
-
-    .hero-input::placeholder { color: #a6988d; }
-
-    .hero-btn {
-        background: #c5a059; 
-        color: #1e352f;
-        border: none;
-        padding: 18px 32px;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-    }
-
-    .hero-btn:hover { 
-        background: #b38f47; 
-        color: #fbf9f4;
-    }
-
-    /* ── Catálogo Geral ── */
-    .catalog {
-        max-width: 1400px; 
-        margin: 0 auto;
-        padding: 60px 24px 80px;
-    }
-
-    .catalog-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 36px;
-        border-bottom: 2px solid #1e352f;
-        padding-bottom: 16px;
-    }
-
-    .catalog-title {
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #1e352f;
-        margin: 0;
-        letter-spacing: -0.01em;
-    }
-
-    .catalog-count {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.85rem;
-        color: #706255;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    /* Grid de 4 colunas com os mesmos cards largos e bem espaçados da home */
-    .catalog-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(260px, 1fr));
-        gap: 32px; 
-    }
-
-    /* Responsividade corrigida usando os caracteres de escape do Razor (@@) */
-    @@media (max-width: 1200px) {
-        .catalog-grid { grid-template-columns: repeat(3, minmax(240px, 1fr)); }
-    }
-    @@media (max-width: 900px) {
-        .catalog-grid { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
-    }
-    @@media (max-width: 550px) {
-        .catalog-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ── Cards Customizados dos Produtos ── */
-    .produto-card {
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(43, 37, 32, 0.05);
-        border: 1px solid #e6ded2;
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-        min-height: 220px; 
-    }
-
-    .produto-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 28px rgba(30, 53, 47, 0.15);
-    }
-
-    /* Barrinha superior com o gradiente em verde clássico da biblioteca */
-    .produto-top-bar {
-        height: 6px;
-        background: linear-gradient(90deg, #142420 0%, #1e352f 60%, #29463f 100%);
-    }
-
-    .produto-body {
-        flex: 1;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background: linear-gradient(135deg, #ffffff 85%, #faf6ee 100%);
-    }
-
-    .produto-meta {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .produto-categoria {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.65rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #1e352f;
-        background: #e9efe1; 
-        padding: 3px 10px;
-        border-radius: 4px;
-    }
-
-    .star-icon {
-        color: #ebdcb9;
-        transition: color 0.2s;
-    }
-
-    .produto-card:hover .star-icon {
-        color: #c5a059; /* Ativa o brilho ouro velho no hover */
-    }
-
-    .produto-nome {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1e352f; 
-        margin: 0;
-        line-height: 1.3;
-        letter-spacing: -0.01em;
-    }
-
-    .produto-descricao {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.9rem;
-        color: #706255;
-        line-height: 1.5;
-        margin: 0 mb-2;
-        /* Limita a descrição a 3 linhas caso seja muito longa */
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .produto-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: auto;
-        padding-top: 12px;
-        border-top: 1px solid #f2ede4;
-    }
-
-    .produto-preco {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #1e352f;
-    }
-
-    .btn-detalhes {
-        display: inline-block;
-        background: transparent;
-        color: #c5a059;
-        border: 1px solid #c5a059;
-        padding: 6px 14px;
-        border-radius: 4px;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        transition: all 0.2s ease;
-    }
-
-    .produto-card:hover .btn-detalhes {
-        background: #c5a059;
-        color: #fbf9f4;
-    }
-
-    /* ── Estado Vazio ── */
-    .catalog-empty {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 80px 20px;
-        color: #8c7e74;
-    }
-
-    .empty-icon {
-        font-size: 2.5rem;
-        color: #ebdcb9;
-        display: block;
-        margin-bottom: 12px;
-    }
+    .search-box:focus-within { border-color: #ffb834; box-shadow: 0 0 12px rgba(255,184,52,0.2); }
+    .search-box input { flex: 1; padding: 0.8rem 1.2rem; border: none; background: #1a1429; color: #fff; outline: none; font-size: 0.95rem; }
+    .search-box input::placeholder { color: #9c8eb9; }
+    .search-box button { background: #ffb834; color: #120c1f; border: none; padding: 0 1.4rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+    .search-box button:hover { background: #ffca64; }
+    main { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+    .catalog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #3a2a56; padding-bottom: 1rem; }
+    .catalog-title { font-size: 1.5rem; color: #ffb834; margin: 0; }
+    .catalog-count { font-size: 0.85rem; color: #9c8eb9; display: inline-flex; align-items: center; gap: 6px; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.8rem; }
+    .produto-card { background: #1a1429; border: 1px solid #3a2a56; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; }
+    .produto-card:hover { transform: translateY(-5px); border-color: #ffb834; box-shadow: 0 8px 24px rgba(255,184,52,0.1); }
+    .produto-top-bar { height: 4px; background: linear-gradient(90deg, #ffb834, #ffca64); }
+    .produto-body { flex: 1; padding: 1.4rem; display: flex; flex-direction: column; gap: 8px; }
+    .produto-meta { display: flex; align-items: center; justify-content: space-between; }
+    .produto-categoria { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffb834; background: rgba(255,184,52,0.1); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,184,52,0.3); }
+    .star-icon { color: #3a2a56; transition: color 0.2s; }
+    .produto-card:hover .star-icon { color: #ffb834; }
+    .produto-nome { font-size: 1.15rem; font-weight: 700; color: #fff; margin: 0; }
+    .produto-descricao { font-size: 0.88rem; color: #9c8eb9; margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .produto-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 12px; border-top: 1px solid #3a2a56; }
+    .produto-preco { font-size: 1.2rem; font-weight: 700; color: #ffb834; }
+    .btn-detalhes { display: inline-block; background: transparent; color: #ffb834; border: 1px solid #ffb834; padding: 5px 14px; border-radius: 5px; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+    .btn-detalhes:hover { background: #ffb834; color: #120c1f; }
+    .catalog-empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #9c8eb9; }
+    .empty-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+    @@media (max-width: 768px) { main { padding: 2rem 1.2rem; } .hero { padding: 3.5rem 1.5rem; } .hero h1 { font-size: 2rem; } }
 </style>
