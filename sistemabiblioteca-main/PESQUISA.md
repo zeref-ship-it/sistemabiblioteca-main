@@ -1,6 +1,6 @@
 # Relatório Técnico — Sistema Biblioteca (ASP.NET Core MVC + EF Core + SQLite)
 
-**Autor:** Luiz Carlos Caetano
+**Autor:** Luiz Carlos Caetano Martins
 **Disciplina:** PROGRAMAÇÃO PARA WEB II - PROF RUBEN PRADO
 **Contexto:** Desafio técnico — relatório para o CTO sobre a base tecnológica do projeto
 
