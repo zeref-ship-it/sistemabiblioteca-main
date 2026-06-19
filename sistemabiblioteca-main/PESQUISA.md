@@ -1,12 +1,12 @@
 RELATÓRIO TÉCNICO – SISTEMA BIBLIOTECA (ASP.NET CORE MVC + EF CORE + SQLITE)
 
-Autor: Luiz Carlos Caetano Martins
+**Autor:** Luiz Carlos Caetano
+**Disciplina:** PROGRAMAÇÃO PARA WEB II - PROF RUBEN PRADO
+**Contexto:** Desafio técnico — relatório para o CTO sobre a base tecnológica do projeto
 
-Disciplina: Programação para Web II – Prof. Ruben Prado
+---
 
-Contexto: Relatório técnico sobre a base tecnológica utilizada no projeto Sistema Biblioteca.
-
-# Introdução
+## Introdução
 
 Este relatório apresenta os principais componentes tecnológicos utilizados no desenvolvimento do Sistema Biblioteca. O objetivo é explicar as escolhas realizadas durante a implementação do projeto, destacando o uso da Injeção de Dependência no ASP.NET Core, o papel do Entity Framework Core como ferramenta de acesso a dados e as características do SQLite como banco de dados utilizado nesta fase do desenvolvimento.
 
