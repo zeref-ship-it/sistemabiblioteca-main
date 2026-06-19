@@ -1,24 +1,26 @@
-# Relatório Técnico — Sistema Biblioteca (ASP.NET Core MVC + EF Core + SQLite)
+RELATÓRIO TÉCNICO – SISTEMA BIBLIOTECA (ASP.NET CORE MVC + EF CORE + SQLITE)
 
-**Autor:** Luiz Carlos Caetano
-**Disciplina:** PROGRAMAÇÃO PARA WEB II - PROF RUBEN PRADO
-**Contexto:** Desafio técnico — relatório para o CTO sobre a base tecnológica do projeto
+Autor: Luiz Carlos Caetano Martins
 
----
+Disciplina: Programação para Web II – Prof. Ruben Prado
 
-## Introdução
+Contexto: Relatório técnico sobre a base tecnológica utilizada no projeto Sistema Biblioteca.
 
-Este relatório explica, de forma técnica e objetiva, os três pilares que sustentam o **Sistema Biblioteca**: a Injeção de Dependência do ASP.NET Core, o funcionamento do Entity Framework Core como ORM, e os limites do SQLite como banco de dados. O objetivo é justificar as decisões técnicas atuais e indicar o caminho de evolução da plataforma.
+# Introdução
 
----
+Este relatório apresenta os principais componentes tecnológicos utilizados no desenvolvimento do Sistema Biblioteca. O objetivo é explicar as escolhas realizadas durante a implementação do projeto, destacando o uso da Injeção de Dependência no ASP.NET Core, o papel do Entity Framework Core como ferramenta de acesso a dados e as características do SQLite como banco de dados utilizado nesta fase do desenvolvimento.
 
-## 1. ⚙️ O Motor do ASP.NET (Injeção de Dependência)
+Além disso, também apresento algumas limitações identificadas durante o projeto e os próximos passos previstos para a evolução da aplicação.
 
-### O que é Injeção de Dependência (DI) e qual problema ela resolve
+# 1. Injeção de Dependência no ASP.NET Core
 
-**Injeção de Dependência (Dependency Injection)** é um padrão de projeto em que uma classe **não cria** os objetos de que precisa para funcionar — ela apenas **declara** essa necessidade (geralmente no construtor), e um componente externo, chamado **container de DI**, se encarrega de fornecer (“injetar”) essa dependência pronta para uso.
+## O que é Injeção de Dependência e por que ela foi utilizada
 
-No nosso projeto, isso aparece o tempo todo. Por exemplo, o `AccountController` e o `AdminController` recebem um `AppDbContext` no construtor, em vez de fazer algo como `new AppDbContext()` dentro de cada método:
+A Injeção de Dependência (Dependency Injection – DI) é um padrão de desenvolvimento que permite que uma classe receba os objetos necessários para seu funcionamento sem precisar criá-los diretamente. Em vez de instanciar dependências dentro do próprio código, elas são fornecidas automaticamente pelo framework.
+
+Durante o desenvolvimento do Sistema Biblioteca utilizei esse recurso principalmente para disponibilizar o AppDbContext aos controladores da aplicação. Dessa forma, os controladores ficam responsáveis apenas pelas regras de negócio e pelo processamento das requisições, sem precisar conhecer detalhes de configuração do banco de dados.
+
+Um exemplo disso pode ser observado no construtor dos controladores:
 
 ```csharp
 public class AdminController : Controller
@@ -32,51 +34,48 @@ public class AdminController : Controller
 }
 ```
 
-O **problema que isso resolve** é o **acoplamento forte**. Se o Controller criasse o `AppDbContext` manualmente, ele precisaria saber detalhes de configuração (string de conexão, provedor de banco, etc.) e ficaria “preso” a essa implementação específica. Isso traz várias dores:
+Essa abordagem reduz o acoplamento entre os componentes do sistema e facilita futuras alterações na infraestrutura da aplicação.
 
-- Dificulta a troca de implementação (ex: trocar SQLite por PostgreSQL no futuro).
-- Dificulta testes automatizados, já que não é possível substituir o banco real por um “dublê” (mock/fake) nos testes.
-- Espalha lógica de configuração por todo o código, em vez de centralizá-la em um único lugar.
+Caso o contexto fosse criado manualmente em cada controlador, seria necessário repetir configurações e modificar diversos trechos de código sempre que ocorresse alguma mudança relacionada ao banco de dados.
 
-Com DI, toda a configuração fica centralizada no `Program.cs`, em uma única linha:
+No projeto, toda a configuração ficou centralizada no arquivo Program.cs:
 
 ```csharp
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Data Source=biblioteca.db"));
 ```
 
-A partir daí, qualquer Controller que precisar conversar com o banco simplesmente **pede** um `AppDbContext` no construtor, e o ASP.NET Core entrega a instância correta automaticamente.
+Com isso, qualquer controlador que necessite acessar o banco apenas solicita o AppDbContext e o ASP.NET Core fornece automaticamente a instância adequada.
 
-### Os três ciclos de vida: Transient, Scoped e Singleton
+## Ciclos de vida dos serviços
 
-Quando registramos um serviço no container de DI, precisamos dizer **quanto tempo** aquela instância deve viver. Existem três opções:
+Ao registrar serviços no container de dependências do ASP.NET Core, é necessário definir seu ciclo de vida.
 
-- **Transient (`AddTransient`)**: uma **nova instância é criada toda vez** que o serviço é solicitado, mesmo que seja dentro da mesma requisição. É ideal para serviços leves, sem estado (stateless), e que não guardam nenhuma informação entre chamadas.
+O ciclo Transient cria uma nova instância toda vez que o serviço é solicitado. Esse modelo costuma ser utilizado em serviços leves e sem armazenamento de estado.
 
-- **Scoped (`AddScoped`)**: **uma única instância é criada por requisição HTTP**. Ou seja, durante todo o processamento de uma requisição (do início ao fim), todo mundo que pedir aquele serviço vai receber a **mesma** instância. Quando a requisição termina, essa instância é descartada. É exatamente o que usamos para o `AppDbContext`, já que `AddDbContext` registra o contexto como **Scoped por padrão**.
+O ciclo Scoped cria uma única instância durante cada requisição HTTP. Todos os componentes envolvidos naquela requisição utilizam a mesma instância. Esse é o comportamento padrão utilizado pelo Entity Framework Core para o DbContext.
 
-- **Singleton (`AddSingleton`)**: **uma única instância é criada para toda a aplicação**, e essa mesma instância é reaproveitada em **todas** as requisições, de **todos** os usuários, durante todo o tempo de vida do servidor.
+Já o ciclo Singleton cria apenas uma instância durante toda a execução da aplicação. Essa mesma instância é compartilhada por todos os usuários e requisições.
 
-### Por que o banco de dados nunca deve ser Singleton?
+## Por que o DbContext não deve ser Singleton
 
-O `DbContext` do Entity Framework **não é thread-safe**. Isso significa que ele não foi projetado para ser usado por múltiplas requisições simultaneamente. Se ele fosse registrado como Singleton:
+O DbContext não foi desenvolvido para ser compartilhado simultaneamente entre várias requisições. Caso fosse registrado como Singleton, poderiam ocorrer problemas de concorrência, compartilhamento indevido de dados e aumento excessivo do consumo de memória.
 
-- Vários usuários acessando o sistema ao mesmo tempo estariam compartilhando a **mesma instância** do contexto, e suas operações de leitura/escrita no banco se misturariam, causando erros de concorrência e dados corrompidos.
-- O EF Core mantém um **cache interno de entidades rastreadas** (change tracker) por instância de contexto. Com Singleton, esse cache cresceria indefinidamente e nunca seria liberado, levando a vazamento de memória.
-- Uma requisição poderia, sem querer, salvar ou alterar dados de outra requisição que ainda estivesse em andamento.
+Além disso, o Entity Framework mantém internamente informações sobre as entidades monitoradas. Em um cenário de longa duração, isso poderia provocar degradação de desempenho e comportamentos inesperados.
 
-Por isso, **Scoped é a escolha correta**: cada requisição recebe seu próprio `AppDbContext`, isolado, que vive apenas durante aquela requisição e é descartado (`Dispose`) ao final, liberando a conexão com o banco.
+Por esse motivo, o ciclo Scoped é considerado a opção mais adequada para aplicações web, garantindo que cada requisição trabalhe de forma isolada.
 
----
+# 2. Entity Framework Core e ORM
 
-## 2. 🪄 A Mágica do Banco de Dados (EF Core e ORM)
+## O papel do ORM no desenvolvimento
 
-### O que é uma ferramenta ORM e qual a vantagem para o tempo de desenvolvimento
+O Entity Framework Core é um ORM (Object-Relational Mapper), ou seja, uma ferramenta que realiza o mapeamento entre objetos da aplicação e estruturas relacionais do banco de dados.
 
-**ORM (Object-Relational Mapper)** é uma ferramenta que faz a “tradução” entre o mundo orientado a objetos (classes, propriedades, listas) e o mundo relacional do banco de dados (tabelas, colunas, chaves estrangeiras). Em vez de escrever SQL manualmente, o desenvolvedor trabalha apenas com classes C# comuns.
+Na prática, isso significa que posso trabalhar diretamente com classes C# sem precisar escrever comandos SQL para as operações mais comuns.
 
-No nosso projeto, classes como `Produto`, `Cliente` e `Livro` são simples classes C# (POCOs), e o EF Core as mapeia automaticamente para tabelas do banco. O `AppDbContext` expõe essas entidades como `DbSet<T>`:
+No Sistema Biblioteca foram criadas entidades como Livro, Cliente e Produto. Essas entidades são expostas através do AppDbContext por meio de propriedades DbSet:
 
 ```csharp
 public DbSet<Produto> Produtos => Set<Produto>();
@@ -84,94 +83,83 @@ public DbSet<Cliente> Clientes => Set<Cliente>();
 public DbSet<Livro> Livros => Set<Livro>();
 ```
 
-A grande **vantagem para o time** é a produtividade: em vez de escrever `INSERT INTO`, `SELECT * FROM` e `UPDATE` manualmente, basta escrever código C# como `_context.Livros.Add(novoLivro)` e `_context.SaveChanges()`. Isso:
+Essa abordagem trouxe ganhos significativos de produtividade durante o desenvolvimento, pois permitiu focar na implementação das funcionalidades do sistema em vez de dedicar tempo à construção manual de consultas SQL.
 
-- Reduz drasticamente a quantidade de código repetitivo (boilerplate).
-- Diminui o risco de erros de digitação em SQL e de vulnerabilidades como **SQL Injection**, já que o EF Core gera as queries de forma parametrizada e segura.
-- Permite que o desenvolvedor pense no domínio do problema (livros, clientes) em vez de sintaxe de banco de dados.
-- Facilita a troca de banco de dados no futuro, já que boa parte do código não depende do provedor específico (SQLite, SQL Server, PostgreSQL).
+Operações como inserção, atualização e remoção de registros passaram a ser realizadas através de métodos disponibilizados pelo próprio framework.
 
-### O que significa trabalhar com a abordagem Code-First
+Outro benefício importante é a proteção contra ataques de SQL Injection, já que o Entity Framework realiza a parametrização adequada das consultas geradas.
 
-**Code-First** significa que o **código é a fonte da verdade** do modelo de dados — o banco de dados é uma consequência do código, e não o contrário.
+## Utilização da abordagem Code First
 
-Na prática, isso quer dizer:
+Neste projeto optei pela estratégia Code First.
 
-1. O desenvolvedor escreve as classes C# (entidades), como `Produto` e `Cliente`.
-2. O EF Core analisa essas classes e suas propriedades.
-3. A partir delas, o EF Core **gera a estrutura do banco** (tabelas, colunas, tipos, chaves primárias e estrangeiras).
+Nessa abordagem, as classes da aplicação representam a fonte principal de definição da estrutura dos dados. Conforme novas entidades ou propriedades são criadas, o Entity Framework pode gerar automaticamente as tabelas e relacionamentos necessários.
 
-É o oposto da abordagem **Database-First**, em que o banco já existe e as classes são geradas a partir dele. No nosso projeto, em nenhum momento escrevemos um `CREATE TABLE` — apenas modelamos as classes em C#, e o EF Core cuidou da estrutura do banco.
+Essa estratégia facilitou bastante o desenvolvimento inicial, pois permitiu modelar o sistema diretamente em código, sem a necessidade de criar manualmente scripts SQL para cada alteração.
 
-### Como funcionam as Migrations
+## Migrations e evolução do banco de dados
 
-As **Migrations** são o mecanismo do EF Core para evoluir o esquema do banco de dados de forma controlada e versionada, conforme o modelo de classes muda ao longo do tempo.
+As Migrations são o mecanismo utilizado pelo Entity Framework para controlar a evolução do esquema do banco de dados.
 
-O fluxo de trabalho típico com Migrations é:
+Sempre que uma entidade sofre alterações, é possível gerar uma migration contendo as modificações necessárias para atualizar a estrutura existente sem perder dados já armazenados.
 
-1. O desenvolvedor altera uma entidade (ex: adiciona uma propriedade `Email` na classe `Cliente`).
-2. Roda `dotnet ef migrations add NomeDaMigration` no terminal.
-3. O EF Core compara o **modelo atual das classes** com o **último snapshot salvo** (um arquivo C# gerado automaticamente que representa o estado anterior do banco) e gera um novo arquivo de migration contendo os métodos `Up()` (o que aplicar) e `Down()` (como reverter).
-4. Ao rodar `dotnet ef database update`, o EF Core executa, em ordem, todas as migrations que ainda não foram aplicadas naquele banco.
+Atualmente o projeto utiliza o método:
 
-Para saber **o que já foi criado e o que é novo**, o EF Core mantém, dentro do próprio banco de dados, uma tabela de controle chamada **`__EFMigrationsHistory`**. Essa tabela guarda o nome de cada migration já aplicada. Assim, ao rodar `database update`, o EF Core:
+```csharp
+db.Database.EnsureCreated();
+```
 
-- Consulta a tabela `__EFMigrationsHistory`.
-- Compara com a lista de migrations existentes no projeto.
-- Aplica **apenas as que ainda não constam** na tabela de histórico, na ordem correta.
+Essa solução foi suficiente durante a fase inicial de desenvolvimento e testes, pois cria automaticamente o banco e suas tabelas quando necessário.
 
-> **Observação importante sobre o estado atual do projeto:** atualmente, o `Program.cs` deste projeto usa `db.Database.EnsureCreated()` em vez de Migrations:
-> ```csharp
-> var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-> db.Database.EnsureCreated();
-> ```
-> O `EnsureCreated()` é uma abordagem mais simples: ele cria o banco e as tabelas **de uma vez**, com base no modelo atual, mas **não gera histórico de versões** e **não consegue aplicar alterações incrementais** em um banco que já existe (se o modelo mudar, ele não atualiza o banco automaticamente). É adequado para protótipos e ambientes de estudo, mas **não deve ser usado em produção**. O projeto já possui os pacotes `Microsoft.EntityFrameworkCore.Design` e `Microsoft.EntityFrameworkCore.Tools` instalados, então a migração para o uso de Migrations reais (`dotnet ef migrations add` / `dotnet ef database update`) é simples e recomendada como próximo passo de evolução técnica.
+Entretanto, reconheço que essa abordagem possui limitações para ambientes mais avançados, já que não mantém histórico de alterações nem permite o gerenciamento adequado da evolução do banco de dados.
 
----
+Por esse motivo, uma das próximas melhorias planejadas é substituir o EnsureCreated() pelo uso completo de Migrations, tornando o processo de manutenção e atualização mais seguro e profissional.
 
-## 3. 🗄️ O Limite do nosso SQLite
+# 3. Avaliação do SQLite no Projeto
 
-### Vantagens do SQLite no ambiente de desenvolvimento e testes
+## Benefícios do SQLite durante o desenvolvimento
 
-O SQLite é o banco de dados configurado atualmente no projeto (`Data Source=biblioteca.db`), e isso traz vantagens claras **para a fase atual**:
+O SQLite foi escolhido para a fase atual do Sistema Biblioteca devido à sua simplicidade de utilização.
 
-- **Zero configuração (Zero-config)**: não é preciso instalar nem configurar um servidor de banco de dados separado. O banco inteiro é um único arquivo `.db`.
-- **Portabilidade**: o arquivo `biblioteca.db` pode ser copiado, versionado e movido junto com o projeto, facilitando demonstrações e testes locais.
-- **Velocidade de setup**: qualquer novo desenvolvedor do time clona o repositório, roda o projeto, e o banco já é criado automaticamente — sem precisar de credenciais, IP de servidor ou instalação adicional.
-- **Leveza**: por rodar embutido no próprio processo da aplicação (não é client-servidor), tem baixíssimo overhead, ideal para desenvolvimento, testes automatizados e demonstrações.
+Como se trata de um banco baseado em arquivo, não há necessidade de instalar ou configurar um servidor dedicado. Isso permitiu iniciar o desenvolvimento rapidamente e simplificou a distribuição do projeto para testes.
 
-### O grande ponto fraco do SQLite em concorrência
+Outro ponto positivo é a portabilidade. O banco fica armazenado em um único arquivo, facilitando cópias, backups e compartilhamento entre diferentes ambientes de desenvolvimento.
 
-O SQLite tem uma limitação estrutural conhecida: ele utiliza **bloqueio em nível de arquivo (file-level locking)**. Isso significa que, embora o SQLite permita **múltiplas leituras simultâneas**, ele só permite **uma única escrita por vez** no banco inteiro. Enquanto uma escrita está em andamento, todas as outras tentativas de escrita (e, dependendo do modo de jornal usado, até leituras) precisam **esperar na fila**.
+Para projetos acadêmicos e protótipos, essas características tornam o SQLite uma alternativa bastante eficiente.
 
-Em um cenário com **10.000 acessos simultâneos**, especialmente se houver um volume razoável de operações de escrita (cadastrar cliente, registrar empréstimo de livro, etc.), isso se torna um gargalo crítico:
+## Limitações relacionadas à concorrência
 
-- As escritas concorrentes são **serializadas** (uma de cada vez), gerando filas de espera.
-- Em alta concorrência, isso resulta em **erros de "database is locked"** (banco bloqueado) e tempos de resposta inaceitáveis para os usuários.
-- Diferente de bancos cliente-servidor, o SQLite não foi projetado para gerenciar múltiplas conexões de rede concorrentes vindas de servidores diferentes — ele assume, em geral, um único processo acessando o arquivo.
+Apesar das vantagens, o SQLite apresenta limitações importantes quando o volume de acessos cresce.
 
-### Quando migrar para um banco robusto em nuvem (PostgreSQL/SQL Server)
+Seu mecanismo de bloqueio trabalha principalmente em nível de arquivo, permitindo múltiplas leituras simultâneas, mas restringindo operações de escrita concorrentes.
 
-A migração deixa de ser opcional e passa a ser necessária quando aparecem sinais como:
+Em um cenário com grande quantidade de usuários realizando cadastros, atualizações ou empréstimos ao mesmo tempo, podem ocorrer filas de processamento, aumento do tempo de resposta e erros relacionados ao bloqueio do banco.
 
-- **Alta concorrência de escrita**: muitos usuários cadastrando, atualizando ou excluindo dados ao mesmo tempo — exatamente o cenário dos 10.000 acessos simultâneos mencionado pelo CTO.
-- **Necessidade de escalar horizontalmente**: rodar a aplicação em múltiplos servidores/instâncias ao mesmo tempo (load balancing), o que exige um banco que aceite conexões de rede de várias origens simultaneamente — algo que o SQLite, por ser um arquivo local, não suporta bem.
-- **Necessidade de recursos avançados**: controle de acesso granular por usuário no próprio banco, replicação, backups automatizados em nuvem, alta disponibilidade (failover) e auditoria robusta.
-- **Crescimento do volume de dados**: bancos como PostgreSQL e SQL Server são otimizados para grandes volumes de dados com índices avançados e otimizador de consultas mais sofisticado.
+Por esse motivo, o SQLite é mais indicado para ambientes de desenvolvimento, testes ou aplicações de pequeno porte.
 
-Bancos como **PostgreSQL** ou **SQL Server** resolvem esses problemas porque são bancos **cliente-servidor**: rodam como um serviço independente, aceitam múltiplas conexões de rede simultâneas, têm controle de concorrência muito mais sofisticado (MVCC — *Multiversion Concurrency Control*, no caso do PostgreSQL) e permitem que várias escritas aconteçam de forma muito mais eficiente e segura ao mesmo tempo.
+## Migração futura para PostgreSQL ou SQL Server
 
-A boa notícia é que, graças ao **EF Core** (pilar 2 deste relatório), essa migração é relativamente simples no nosso projeto: como o código já trabalha com abstrações do EF Core (`DbContext`, `DbSet<T>`, LINQ) em vez de SQL puro, a troca se resume principalmente a:
+Pensando em uma futura implantação em produção, considero necessária a migração para um banco de dados cliente-servidor, como PostgreSQL ou SQL Server.
 
-1. Trocar o pacote NuGet do provedor (`Microsoft.EntityFrameworkCore.Sqlite` → `Npgsql.EntityFrameworkCore.PostgreSQL`, por exemplo).
-2. Trocar `options.UseSqlite(...)` por `options.UseNpgsql(...)` no `Program.cs`.
-3. Atualizar a string de conexão.
-4. Recriar/aplicar as Migrations no novo banco.
+Essas plataformas oferecem mecanismos mais avançados de concorrência, melhor gerenciamento de conexões, suporte a grandes volumes de dados e recursos corporativos importantes, como replicação, backup automatizado e alta disponibilidade.
 
----
+Uma vantagem da arquitetura atual é que a utilização do Entity Framework reduz significativamente o impacto dessa mudança.
 
-## Conclusão
+Grande parte da aplicação permanecerá inalterada, sendo necessário principalmente:
 
-A base tecnológica atual (ASP.NET Core MVC + EF Core + SQLite) é uma escolha **sólida e correta para a fase de desenvolvimento e testes** do Sistema Biblioteca. A Injeção de Dependência garante um código desacoplado e testável; o EF Core, como ORM Code-First, acelera o desenvolvimento e elimina a necessidade de SQL manual; e o SQLite oferece simplicidade máxima para essa etapa do projeto.
+* Substituir o provedor de banco de dados utilizado pelo Entity Framework;
+* Atualizar a string de conexão;
+* Configurar o novo servidor;
+* Gerar e aplicar as migrations no ambiente de destino.
 
-Entretanto, para suportar a meta de **10.000 acessos simultâneos**, é necessário planejar a migração para um banco cliente-servidor robusto, como PostgreSQL ou SQL Server, além de formalizar o uso de **Migrations** (em vez de `EnsureCreated()`) como prática de versionamento de banco de dados — preparando o projeto para um ambiente de produção real.
+Dessa forma, a transição tende a ser relativamente simples quando houver necessidade de escalar a aplicação.
+
+# Conclusão
+
+Durante o desenvolvimento do Sistema Biblioteca, a combinação entre ASP.NET Core MVC, Entity Framework Core e SQLite atendeu adequadamente aos objetivos do projeto.
+
+A Injeção de Dependência contribuiu para uma estrutura mais organizada e desacoplada. O Entity Framework Core facilitou o acesso aos dados e acelerou a implementação das funcionalidades. Já o SQLite permitiu criar e testar o sistema rapidamente, sem a complexidade de um servidor de banco de dados completo.
+
+Apesar disso, algumas melhorias já estão previstas para as próximas etapas, especialmente a adoção de Migrations como mecanismo oficial de versionamento do banco e a futura migração para uma solução mais robusta, como PostgreSQL ou SQL Server.
+
+Essas mudanças permitirão que a aplicação esteja mais preparada para cenários de crescimento e para uma possível utilização em ambiente de produção.
