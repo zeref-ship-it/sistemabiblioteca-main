@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=build /out .
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
-ENTRYPOINT ["dotnet", "SistemaBiblioteca.dll"]
+ENTRYPOINT ["dotnet", "sistemabiblioteca.dll"]
