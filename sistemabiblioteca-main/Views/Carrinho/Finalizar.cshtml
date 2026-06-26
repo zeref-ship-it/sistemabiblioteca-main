@@ -1,0 +1,82 @@
+@model sistemabiblioteca.Models.Pedido
+@{
+    ViewData["Title"] = "Selar o Pacto (Finalizar Pedido)";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<section class="hero">
+    <p class="hero-label"><i class="bi bi-scroll"></i> Checkout</p>
+    <h1>Selar o <span>Pacto da Compra</span></h1>
+    <p>Preencha seus dados de aventureiro para concluirmos a entrega</p>
+</section>
+
+<main class="checkout-container">
+    <form asp-action="Finalizar" method="post" class="checkout-card">
+        <div asp-validation-summary="ModelOnly" class="alert-erro"></div>
+        <h3 class="checkout-title"><i class="bi bi-person-badge-fill"></i> Dados do Aventureiro</h3>
+
+        <div class="form-group-custom">
+            <label asp-for="NomeCliente" class="form-label-custom">Nome Completo</label>
+            <input asp-for="NomeCliente" class="form-control-custom" placeholder="Seu nome de aventureiro" />
+            <span asp-validation-for="NomeCliente" class="field-error"></span>
+        </div>
+
+        <div class="form-row-custom">
+            <div class="form-group-custom">
+                <label asp-for="EmailCliente" class="form-label-custom">E-mail</label>
+                <input asp-for="EmailCliente" class="form-control-custom" placeholder="exemplo@email.com" />
+                <span asp-validation-for="EmailCliente" class="field-error"></span>
+            </div>
+            <div class="form-group-custom">
+                <label asp-for="TelefoneCliente" class="form-label-custom">Telefone</label>
+                <input asp-for="TelefoneCliente" class="form-control-custom" placeholder="(00) 00000-0000" />
+                <span asp-validation-for="TelefoneCliente" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group-custom">
+            <label asp-for="Endereco" class="form-label-custom">Endereço de Entrega</label>
+            <input asp-for="Endereco" class="form-control-custom" placeholder="Rua, número, bairro, cidade - UF" />
+            <span asp-validation-for="Endereco" class="field-error"></span>
+        </div>
+
+        <div class="form-group-custom">
+            <label asp-for="Observacoes" class="form-label-custom">Observações (opcional)</label>
+            <textarea asp-for="Observacoes" class="form-control-custom" rows="3" placeholder="Alguma instrução para a entrega?"></textarea>
+            <span asp-validation-for="Observacoes" class="field-error"></span>
+        </div>
+
+        <div class="form-actions-bar">
+            <button type="submit" class="btn-salvar"><i class="bi bi-shield-check"></i> Confirmar Pedido</button>
+            <a asp-action="Index" class="btn-cancelar">Voltar à Mochila</a>
+        </div>
+    </form>
+</main>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+<style>
+    .hero { padding: 4rem 2rem; text-align: center; background: linear-gradient(rgba(18,12,31,0.85), #120c1f), radial-gradient(circle, rgba(58,42,86,0.4) 0%, rgba(18,12,31,1) 70%); border-bottom: 1px solid #3a2a56; }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ffb834; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2.4rem; color: #fff; margin-bottom: 0.6rem; }
+    .hero h1 span { color: #ffb834; }
+    .hero p { font-size: 1rem; color: #9c8eb9; max-width: 560px; margin: 0 auto; }
+    .checkout-container { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .checkout-card { background: #1a1429; border: 1px solid #3a2a56; border-radius: 12px; padding: 2.2rem; }
+    .checkout-title { font-size: 1.2rem; color: #ffb834; margin: 0 0 1.5rem; display: flex; align-items: center; gap: 10px; }
+    .form-group-custom { margin-bottom: 20px; flex: 1; }
+    .form-row-custom { display: flex; gap: 20px; }
+    .form-label-custom { display: block; font-size: 0.86rem; font-weight: 700; color: #ffb834; margin-bottom: 7px; }
+    .form-control-custom { width: 100%; padding: 11px 14px; border: 1px solid #3a2a56; border-radius: 6px; background: #120c1f; color: #e2daeb; font-size: 0.93rem; outline: none; transition: all 0.2s; box-sizing: border-box; resize: vertical; }
+    .form-control-custom:focus { border-color: #ffb834; box-shadow: 0 0 0 3px rgba(255,184,52,0.12); }
+    .form-control-custom::placeholder { color: #9c8eb9; }
+    .field-error { font-size: 0.78rem; color: #e74c3c; display: block; margin-top: 5px; }
+    .alert-erro { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); color: #e74c3c; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; margin-bottom: 16px; }
+    .form-actions-bar { display: flex; align-items: center; gap: 16px; margin-top: 28px; padding-top: 22px; border-top: 1px solid #3a2a56; }
+    .btn-salvar { background: #ffb834; color: #120c1f; border: none; padding: 13px 26px; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-salvar:hover { background: #ffca64; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255,184,52,0.3); }
+    .btn-cancelar { background: transparent; color: #9c8eb9; border: 1px solid #3a2a56; padding: 12px 22px; border-radius: 6px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+    .btn-cancelar:hover { background: #3a2a56; color: #e2daeb; }
+    @@media (max-width: 560px) { .form-row-custom { flex-direction: column; gap: 0; } .form-actions-bar { flex-direction: column; } .btn-salvar, .btn-cancelar { width: 100%; text-align: center; justify-content: center; } }
+</style>

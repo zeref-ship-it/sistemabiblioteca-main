@@ -24,5 +24,17 @@ public class Produto
     [Required(ErrorMessage = "A categoria é obrigatória.")]
     [StringLength(50, ErrorMessage = "A categoria deve ter no máximo 50 caracteres.")]
     [Display(Name = "Categoria")]
-    public string Categoria { get; set; } = string.Empty; // Ex: Livro, Produto ou Serviço
+    public string Categoria { get; set; } = string.Empty; // Ex: RPG, Fantasia, D&D, Pathfinder...
+
+    [Display(Name = "Autor")]
+    [StringLength(100, ErrorMessage = "O autor deve ter no máximo 100 caracteres.")]
+    public string? Autor { get; set; }
+
+    [Display(Name = "Imagem (URL)")]
+    [StringLength(300)]
+    public string? ImagemUrl { get; set; }
+
+    [Display(Name = "Estoque")]
+    [Range(0, 100000, ErrorMessage = "O estoque não pode ser negativo.")]
+    public int Estoque { get; set; } = 10;
 }

@@ -1,0 +1,134 @@
+@model sistemabiblioteca.Models.Carrinho
+@{
+    ViewData["Title"] = "Mochila de Aventura";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<section class="hero">
+    <p class="hero-label"><i class="bi bi-bag-fill"></i> Carrinho de Compras</p>
+    <h1>Sua <span>Mochila de Aventura</span></h1>
+    <p>Revise seus tesouros antes de selar o pacto da compra</p>
+</section>
+
+<main class="cart-container">
+    @if (TempData["MensagemCarrinho"] != null)
+    {
+        <div class="alert-info-arcana"><i class="bi bi-info-circle-fill"></i> @TempData["MensagemCarrinho"]</div>
+    }
+
+    @if (Model.Itens.Any())
+    {
+        <div class="cart-grid">
+            <div class="cart-items">
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="cart-item">
+                        <div class="cart-thumb">
+                            @if (!string.IsNullOrEmpty(item.ImagemUrl))
+                            {
+                                <img src="@item.ImagemUrl" alt="@item.Nome" />
+                            }
+                            else
+                            {
+                                <span class="thumb-emoji">📕</span>
+                            }
+                        </div>
+                        <div class="cart-item-info">
+                            <span class="cart-cat">@item.Categoria</span>
+                            <h3>@item.Nome</h3>
+                            <p class="cart-unit">@item.Preco.ToString("C") / unidade</p>
+                            <form asp-action="Atualizar" method="post" class="qty-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                <label>Qtd:</label>
+                                <input type="number" name="quantidade" value="@item.Quantidade" min="1" max="99" />
+                                <button type="submit" class="btn-qty" title="Atualizar"><i class="bi bi-arrow-repeat"></i></button>
+                            </form>
+                        </div>
+                        <div class="cart-item-actions">
+                            <span class="cart-subtotal">@item.Subtotal.ToString("C")</span>
+                            <form asp-action="Remover" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                <button type="submit" class="btn-remover"><i class="bi bi-trash3-fill"></i> Remover</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <aside class="cart-summary">
+                <h3>📜 Resumo do Pedido</h3>
+                <div class="summary-line"><span>Itens</span><span>@Model.QuantidadeTotal</span></div>
+                <div class="summary-line"><span>Subtotal</span><span>@Model.Total.ToString("C")</span></div>
+                <div class="summary-line"><span>Frete</span><span class="frete-gratis">Grátis</span></div>
+                <div class="summary-divider"></div>
+                <div class="summary-total"><span>Total</span><span>@Model.Total.ToString("C")</span></div>
+                <a asp-action="Finalizar" class="btn-checkout">⚔️ Finalizar Pedido</a>
+                <a asp-controller="Home" asp-action="Produtos" class="btn-continuar">Continuar Explorando</a>
+                <form asp-action="Limpar" method="post" class="text-center mt-2">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-limpar">Esvaziar mochila</button>
+                </form>
+            </aside>
+        </div>
+    }
+    else
+    {
+        <div class="cart-empty">
+            <span class="empty-icon">🎒</span>
+            <h2>Sua mochila está vazia</h2>
+            <p>Explore o acervo arcano e adicione grimórios à sua jornada.</p>
+            <a asp-controller="Home" asp-action="Produtos" class="btn-checkout">🔮 Explorar Acervo</a>
+        </div>
+    }
+</main>
+
+<style>
+    .hero { padding: 4rem 2rem; text-align: center; background: linear-gradient(rgba(18,12,31,0.85), #120c1f), radial-gradient(circle, rgba(58,42,86,0.4) 0%, rgba(18,12,31,1) 70%); border-bottom: 1px solid #3a2a56; }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ffb834; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2.4rem; color: #fff; margin-bottom: 0.6rem; }
+    .hero h1 span { color: #ffb834; }
+    .hero p { font-size: 1rem; color: #9c8eb9; max-width: 560px; margin: 0 auto; }
+    .cart-container { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .alert-info-arcana { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); color: #2ecc71; padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; font-size: 0.9rem; }
+    .cart-grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: 2rem; align-items: start; }
+    .cart-items { display: flex; flex-direction: column; gap: 1rem; }
+    .cart-item { display: grid; grid-template-columns: 90px 1fr auto; gap: 1.2rem; background: #1a1429; border: 1px solid #3a2a56; border-radius: 10px; padding: 1.2rem; align-items: center; }
+    .cart-thumb { width: 90px; height: 120px; border-radius: 6px; overflow: hidden; background: linear-gradient(45deg,#251b3a,#3a2a56); display: flex; align-items: center; justify-content: center; }
+    .cart-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-emoji { font-size: 2.5rem; }
+    .cart-cat { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffb834; background: rgba(255,184,52,0.1); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,184,52,0.3); }
+    .cart-item-info h3 { font-size: 1.1rem; color: #fff; margin: 8px 0 4px; }
+    .cart-unit { font-size: 0.82rem; color: #9c8eb9; margin: 0 0 10px; }
+    .qty-form { display: flex; align-items: center; gap: 8px; }
+    .qty-form label { font-size: 0.82rem; color: #9c8eb9; }
+    .qty-form input { width: 60px; padding: 6px 8px; background: #120c1f; border: 1px solid #3a2a56; border-radius: 5px; color: #e2daeb; }
+    .btn-qty { background: #3a2a56; border: none; color: #ffb834; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+    .btn-qty:hover { background: #ffb834; color: #120c1f; }
+    .cart-item-actions { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .cart-subtotal { font-size: 1.2rem; font-weight: 700; color: #ffb834; }
+    .btn-remover { background: transparent; border: 1px solid rgba(231,76,60,0.4); color: #e74c3c; padding: 6px 12px; border-radius: 5px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+    .btn-remover:hover { background: #e74c3c; color: #fff; }
+    .cart-summary { background: #1a1429; border: 1px solid #3a2a56; border-radius: 12px; padding: 1.8rem; position: sticky; top: 20px; }
+    .cart-summary h3 { font-size: 1.2rem; color: #ffb834; margin: 0 0 1.2rem; }
+    .summary-line { display: flex; justify-content: space-between; font-size: 0.9rem; color: #9c8eb9; margin-bottom: 12px; }
+    .frete-gratis { color: #2ecc71; font-weight: 700; }
+    .summary-divider { height: 1px; background: #3a2a56; margin: 14px 0; }
+    .summary-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 1.4rem; }
+    .summary-total span:last-child { color: #ffb834; }
+    .btn-checkout { display: block; text-align: center; background: #ffb834; color: #120c1f; text-decoration: none; padding: 13px; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; transition: all 0.2s; }
+    .btn-checkout:hover { background: #ffca64; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255,184,52,0.3); }
+    .btn-continuar { display: block; text-align: center; margin-top: 10px; color: #9c8eb9; text-decoration: none; font-size: 0.85rem; padding: 8px; }
+    .btn-continuar:hover { color: #ffb834; }
+    .btn-limpar { background: none; border: none; color: #9c8eb9; font-size: 0.78rem; text-decoration: underline; cursor: pointer; }
+    .btn-limpar:hover { color: #e74c3c; }
+    .cart-empty { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 4rem; display: block; margin-bottom: 16px; }
+    .cart-empty h2 { color: #fff; margin-bottom: 8px; }
+    .cart-empty p { color: #9c8eb9; margin-bottom: 24px; }
+    .cart-empty .btn-checkout { display: inline-block; padding: 13px 30px; }
+    @@media (max-width: 850px) { .cart-grid { grid-template-columns: 1fr; } .cart-summary { position: static; } }
+    @@media (max-width: 560px) { .cart-item { grid-template-columns: 70px 1fr; } .cart-item-actions { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; } .cart-thumb { width: 70px; height: 95px; } }
+</style>

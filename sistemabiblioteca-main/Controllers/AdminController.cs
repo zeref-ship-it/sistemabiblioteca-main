@@ -23,7 +23,9 @@ public class AdminController : Controller
 
         if (!string.IsNullOrEmpty(busca))
         {
-            query = query.Where(p => p.Nome.Contains(busca));
+            query = query.Where(p => p.Nome.Contains(busca)
+                || (p.Autor != null && p.Autor.Contains(busca))
+                || p.Categoria.Contains(busca));
         }
 
         var resultado = await query.OrderBy(p => p.Id).ToListAsync();
@@ -68,6 +70,9 @@ public class AdminController : Controller
         produto.Descricao = p.Descricao;
         produto.Preco = p.Preco;
         produto.Categoria = p.Categoria;
+        produto.Autor = p.Autor;
+        produto.ImagemUrl = p.ImagemUrl;
+        produto.Estoque = p.Estoque;
 
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
@@ -83,5 +88,75 @@ public class AdminController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // ══════════════════════════════════════════
+    //  GERENCIAMENTO DE PEDIDOS
+    // ══════════════════════════════════════════
+
+    public async Task<IActionResult> Pedidos(string? status, string? busca)
+    {
+        var query = _context.Pedidos.Include(p => p.Itens).AsQueryable();
+
+        if (!string.IsNullOrEmpty(status))
+            query = query.Where(p => p.Status == status);
+
+        if (!string.IsNullOrEmpty(busca))
+            query = query.Where(p => p.NomeCliente.Contains(busca) || p.EmailCliente.Contains(busca));
+
+        var pedidos = await query.OrderByDescending(p => p.DataPedido).ToListAsync();
+
+        ViewBag.StatusAtual = status;
+        ViewBag.Busca = busca;
+        ViewBag.TotalPedidos = pedidos.Count;
+        ViewBag.FaturamentoTotal = pedidos.Where(p => p.Status != "Cancelado").Sum(p => p.Total);
+        ViewBag.Pendentes = await _context.Pedidos.CountAsync(p => p.Status == "Pendente");
+
+        return View(pedidos);
+    }
+
+    public async Task<IActionResult> DetalhesPedido(int id)
+    {
+        var pedido = await _context.Pedidos
+            .Include(p => p.Itens)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (pedido == null)
+            return NotFound();
+
+        return View(pedido);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AtualizarStatus(int id, string status)
+    {
+        var pedido = await _context.Pedidos.FindAsync(id);
+        if (pedido == null)
+            return NotFound();
+
+        var permitidos = new[] { "Pendente", "Em Preparo", "Enviado", "Concluído", "Cancelado" };
+        if (permitidos.Contains(status))
+        {
+            pedido.Status = status;
+            await _context.SaveChangesAsync();
+            TempData["MensagemSucesso"] = $"Status do pedido #{id} atualizado para \"{status}\".";
+        }
+
+        return RedirectToAction(nameof(DetalhesPedido), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ExcluirPedido(int id)
+    {
+        var pedido = await _context.Pedidos.FindAsync(id);
+        if (pedido != null)
+        {
+            _context.Pedidos.Remove(pedido);
+            await _context.SaveChangesAsync();
+            TempData["MensagemSucesso"] = $"Pedido #{id} excluído.";
+        }
+        return RedirectToAction(nameof(Pedidos));
     }
 }

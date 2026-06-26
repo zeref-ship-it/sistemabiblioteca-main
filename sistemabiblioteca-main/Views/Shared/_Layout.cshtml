@@ -118,6 +118,24 @@
             text-decoration: underline;
         }
 
+        /* ── BADGE DO CARRINHO ── */
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            border-radius: 9px;
+            padding: 0 5px;
+            box-shadow: 0 0 8px rgba(231,76,60,0.6);
+        }
+
         /* ── SCROLLBAR CUSTOMIZADA ── */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0b0714; }
@@ -151,21 +169,26 @@
                             <a class="nav-link" asp-controller="Home" asp-action="Contato">Contato</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav align-items-sm-center">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Gerenciar Livros</a>
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Gerenciar Acervo</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Pedidos">Pedidos</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="CadastroCliente" asp-action="Index">Clientes</a>
                             </li>
+                            <li class="nav-item">@await Component.InvokeAsync("CarrinhoResumo")</li>
                             <li class="nav-item">
                                 <a class="btn btn-outline-secondary ms-2" asp-controller="Account" asp-action="Logout">Sair</a>
                             </li>
                         }
                         else
                         {
+                            <li class="nav-item">@await Component.InvokeAsync("CarrinhoResumo")</li>
                             <li class="nav-item">
                                 <a class="btn btn-outline-primary ms-2" asp-controller="Account" asp-action="Login">⚔️ Área Administrativa</a>
                             </li>

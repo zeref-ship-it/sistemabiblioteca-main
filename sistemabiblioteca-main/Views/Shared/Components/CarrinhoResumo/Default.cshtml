@@ -1,0 +1,9 @@
+@model sistemabiblioteca.Models.Carrinho
+
+<a class="btn btn-outline-primary ms-2 position-relative" asp-controller="Carrinho" asp-action="Index" title="Mochila / Carrinho">
+    🎒 Mochila
+    @if (Model.QuantidadeTotal > 0)
+    {
+        <span class="cart-badge">@Model.QuantidadeTotal</span>
+    }
+</a>

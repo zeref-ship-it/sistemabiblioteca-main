@@ -1,454 +1,160 @@
-﻿<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeons Ebook - Biblioteca Arcana</title>
-    <style>
-        /* ==========================================================================
-           1. CONFIGURAÇÕES GERAIS E PALETA DE CORES (RPG THEME)
-           ========================================================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+@model List<sistemabiblioteca.Models.Produto>
+@{
+    ViewData["Title"] = "Início";
+    Layout = "_Layout";
+    var busca = ViewBag.Busca as string;
+}
 
-        :root {
-            --bg-principal: #120c1f; /* Roxo escuro/Masmorra mística */
-            --bg-card: #1a1429;      /* Tom de pedra escuro para os blocos */
-            --detalhe-ouro: #ffb834;  /* Ouro de tesouro/Luz de tocha */
-            --texto-claro: #e2daeb;   /* Texto cor de pergaminho claro */
-            --texto-mutado: #9c8eb9;  /* Texto secundário/Sombra */
-            --borda-brilho: #3a2a56;  /* Borda mística mágica */
-            --sucesso: #2ecc71;       /* Verde para itens disponíveis */
-        }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        body {
-            background-color: var(--bg-principal);
-            color: var(--texto-claro);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+<section class="hero">
+    <span class="hero-eyebrow"></span>
+    <h1>Explore a <span>Biblioteca Arcana</span></h1>
+    <p>Desvende tomos antigos de RPG, monte sua campanha e suba o nível do seu conhecimento. D&D, Pathfinder, fantasia épica e muito mais.</p>
+    <form asp-action="Index" method="get" class="search-box">
+        <input type="text" name="busca" value="@busca" placeholder="Buscar por título, autor ou categoria..." />
+        <button type="submit">🔮 Conjurar</button>
+    </form>
+    <div class="hero-cta">
+        <a asp-action="Produtos" class="btn-hero-primary">📚 Ver Acervo Completo</a>
+        <a asp-controller="Carrinho" asp-action="Index" class="btn-hero-ghost">🎒 Minha Mochila</a>
+    </div>
+</section>
 
-        /* ==========================================================================
-           2. CABEÇALHO E NAVEGAÇÃO
-           ========================================================================== */
-        header {
-            background-color: rgba(26, 20, 41, 0.95);
-            border-bottom: 2px solid var(--detalhe-ouro);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--detalhe-ouro);
-            text-shadow: 0 0 10px rgba(255, 184, 52, 0.3);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--texto-claro);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s, text-shadow 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--detalhe-ouro);
-            text-shadow: 0 0 8px rgba(255, 184, 52, 0.5);
-        }
-
-        /* ==========================================================================
-           3. SEÇÃO HERO (BANNER PRINCIPAL)
-           ========================================================================== */
-        .hero {
-            padding: 6rem 2rem;
-            text-align: center;
-          background: linear-gradient(rgba(18, 12, 31, 0.75), rgba(18, 12, 31, 0.75)), 
-            url('/images/index.png');
-background-size: cover;
-background-position: center;    
-            border-bottom: 1px solid var(--borda-brilho);
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            color: #fff;
-            margin-bottom: 1rem;
-            letter-spacing: 1px;
-        }
-
-        .hero h1 span {
-            color: var(--detalhe-ouro);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--texto-mutado);
-            max-width: 600px;
-            margin: 0 auto 2rem auto;
-        }
-
-        /* Barra de Busca Mística */
-        .search-box {
-            display: flex;
-            max-width: 500px;
-            margin: 0 auto;
-            border: 2px solid var(--borda-brilho);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--detalhe-ouro);
-            box-shadow: 0 0 12px rgba(255, 184, 52, 0.2);
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 0.8rem 1.2rem;
-            border: none;
-            background-color: var(--bg-card);
-            color: #fff;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .search-box input::placeholder {
-            color: var(--texto-mutado);
-        }
-
-        .search-box button {
-            background-color: var(--detalhe-ouro);
-            color: var(--bg-principal);
-            border: none;
-            padding: 0 1.5rem;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .search-box button:hover {
-            background-color: #ffca64;
-        }
-
-        /* ==========================================================================
-           4. CONTEÚDO PRINCIPAL (GRIDS)
-           ========================================================================== */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            flex: 1; /* Garante que o rodapé fique embaixo em telas grandes */
-            width: 100%;
-        }
-
-        section {
-            margin-bottom: 4rem;
-        }
-
-        section h2 {
-            font-size: 2rem;
-            color: var(--detalhe-ouro);
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--detalhe-ouro);
-            padding-left: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        /* Grid de Classes Literárias (Categorias) */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .category-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--borda-brilho);
-            border-radius: 8px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .category-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--detalhe-ouro);
-            box-shadow: 0 5px 15px rgba(255, 184, 52, 0.1);
-        }
-
-        .category-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .category-card h3 {
-            margin-bottom: 0.5rem;
-            color: #fff;
-        }
-
-        .category-card p {
-            font-size: 0.9rem;
-            color: var(--texto-mutado);
-        }
-
-        /* Grid de Grimórios (Livros) */
-        .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .book-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--borda-brilho);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: box-shadow 0.3s, transform 0.3s;
-        }
-
-        .book-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(58, 42, 86, 0.6);
-        }
-
-        .book-cover-placeholder {
-            height: 200px;
-            background: linear-gradient(45deg, #251b3a, #3a2a56);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            border-bottom: 2px solid var(--borda-brilho);
-            user-select: none;
-        }
-
-        .book-info {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .book-title {
-            font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 0.5rem;
-        }
-
-        .book-author {
-            font-size: 0.9rem;
-            color: var(--detalhe-ouro);
-            margin-bottom: 1rem;
-        }
-
-        .book-status {
-            margin-top: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-        }
-
-        .badge-disponivel {
-            background-color: rgba(46, 204, 113, 0.15);
-            color: var(--sucesso);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: 1px solid rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-action {
-            background-color: transparent;
-            border: 1px solid var(--detalhe-ouro);
-            color: var(--detalhe-ouro);
-            padding: 0.5rem 1.2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .btn-action:hover {
-            background-color: var(--detalhe-ouro);
-            color: var(--bg-principal);
-            box-shadow: 0 0 10px rgba(255, 184, 52, 0.4);
-        }
-
-        /* ==========================================================================
-           5. RODAPÉ (FOOTER)
-           ========================================================================== */
-        footer {
-            background-color: #0b0714;
-            border-top: 1px solid var(--borda-brilho);
-            padding: 2rem;
-            text-align: center;
-            color: var(--texto-mutado);
-            font-size: 0.9rem;
-            margin-top: auto;
-        }
-
-        /* ==========================================================================
-           6. RESPONSIVIDADE (MOBILE FIRST/ADAPTABILITY)
-           ========================================================================== */
-        @@media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1.2rem;
-                padding: 1.5rem;
-            }
-            
-            .nav-links {
-                gap: 1.2rem;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .hero {
-                padding: 4rem 1.5rem;
-            }
-
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            main {
-                padding: 2rem 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="nav-container">
-            <a href="#" class="logo">Biblioteca Arcana</a>
-
-        </div>
-    </header>
-
-    <section class="hero">
-        <h1>Explore a <span>Biblioteca Arcana</span></h1>
-        <p>Desvende tomos antigos, gerencie seus pergaminhos emprestados e suba o nível do seu conhecimento.</p>
-        
-        <div class="search-box">
-            <input type="text" placeholder="Buscar por título, autor ou feitiço...">
-            <button>Conjurar</button>
+<main>
+    <section>
+        <h2>Classes Literárias</h2>
+        <div class="categories-grid">
+            <a asp-action="Produtos" asp-route-categoria="D&D" class="category-card">
+                <span class="category-icon">🐉</span>
+                <h3>Dungeons & Dragons</h3>
+                <p>Manuais oficiais e aventuras</p>
+            </a>
+            <a asp-action="Produtos" asp-route-categoria="Pathfinder" class="category-card">
+                <span class="category-icon">⚔️</span>
+                <h3>Pathfinder</h3>
+                <p>Regras e bestiários</p>
+            </a>
+            <a asp-action="Produtos" asp-route-categoria="Fantasia" class="category-card">
+                <span class="category-icon">🔮</span>
+                <h3>Fantasia Épica</h3>
+                <p>Os grandes romances do gênero</p>
+            </a>
+            <a asp-action="Produtos" asp-route-categoria="Suplemento" class="category-card">
+                <span class="category-icon">📜</span>
+                <h3>Suplementos</h3>
+                <p>Grimórios, atlas e tabelas</p>
+            </a>
         </div>
     </section>
 
-    <main>
+    <section>
+        <div class="section-head">
+            <h2>@(string.IsNullOrEmpty(busca) ? "Grimórios em Destaque" : $"Resultados para \"{busca}\"")</h2>
+            <a asp-action="Produtos" class="ver-todos">Ver todos →</a>
+        </div>
 
-        <section>
-            <h2>Classes Literárias</h2>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <span class="category-icon">🔮</span>
-                    <h3>Magia & Ficção</h3>
-                    <p>Mundos distantes e alta fantasia</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">⚔️</span>
-                    <h3>História & Batalhas</h3>
-                    <p>Grandes crônicas da humanidade</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">🧪</span>
-                    <h3>Ciência & Alquimia</h3>
-                    <p>Fórmulas e códigos do universo</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">📜</span>
-                    <h3>Poesia & Pergaminhos</h3>
-                    <p>A arte dos bardos antigos</p>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2>Grimórios Disponíveis</h2>
-            <div class="books-grid">
-                
-                <div class="book-card">
-                    <div class="book-cover-placeholder">📕</div>
-                    <div class="book-info">
-                        <h3 class="book-title">O Nome do Vento</h3>
-                        <p class="book-author">Patrick Rothfuss</p>
-                        <div class="book-status">
-                            <span class="badge-disponivel">Disponível</span>
-                            <button class="btn-action">Saquear</button>
+        <div class="books-grid">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var livro in Model)
+                {
+                    <div class="book-card">
+                        <div class="book-cover">
+                            @if (!string.IsNullOrEmpty(livro.ImagemUrl))
+                            {
+                                <img src="@livro.ImagemUrl" alt="@livro.Nome" loading="lazy" />
+                            }
+                            else
+                            {
+                                <span class="cover-emoji">📕</span>
+                            }
+                            <span class="book-cat">@livro.Categoria</span>
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">@livro.Nome</h3>
+                            <p class="book-author">@livro.Autor</p>
+                            <div class="book-status">
+                                <span class="book-price">@livro.Preco.ToString("C")</span>
+                                <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="produtoId" value="@livro.Id" />
+                                    <input type="hidden" name="returnUrl" value="/" />
+                                    <button type="submit" class="btn-action"><i class="bi bi-bag-plus-fill"></i> Saquear</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="empty-msg">
+                    <span>🗺️</span>
+                    <p>Nenhum tesouro encontrado. Tente outra busca.</p>
                 </div>
+            }
+        </div>
+    </section>
+</main>
 
-                <div class="book-card">
-                    <div class="book-cover-placeholder">📘</div>
-                    <div class="book-info">
-                        <h3 class="book-title">O Hobbit</h3>
-                        <p class="book-author">J.R.R. Tolkien</p>
-                        <div class="book-status">
-                            <span class="badge-disponivel">Disponível</span>
-                            <button class="btn-action">Saquear</button>
-                        </div>
-                    </div>
-                </div>
+<style>
+    :root {
+        --bg-card: #1a1429; --detalhe-ouro: #ffb834; --texto-claro: #e2daeb;
+        --texto-mutado: #9c8eb9; --borda-brilho: #3a2a56; --sucesso: #2ecc71;
+    }
+    .hero {
+        padding: 6rem 2rem 5rem; text-align: center;
+        background: linear-gradient(rgba(18,12,31,0.78), rgba(18,12,31,0.85)), url('/images/index.png');
+        background-size: cover; background-position: center; border-bottom: 1px solid var(--borda-brilho);
+    }
+    .hero-eyebrow { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--detalhe-ouro); margin-bottom: 1.2rem; }
+    .hero h1 { font-size: 3rem; color: #fff; margin-bottom: 1rem; letter-spacing: 1px; }
+    .hero h1 span { color: var(--detalhe-ouro); text-shadow: 0 0 18px rgba(255,184,52,0.3); }
+    .hero p { font-size: 1.15rem; color: var(--texto-mutado); max-width: 640px; margin: 0 auto 2rem; }
+    .search-box { display: flex; max-width: 520px; margin: 0 auto; border: 2px solid var(--borda-brilho); border-radius: 8px; overflow: hidden; transition: all 0.3s; }
+    .search-box:focus-within { border-color: var(--detalhe-ouro); box-shadow: 0 0 12px rgba(255,184,52,0.2); }
+    .search-box input { flex: 1; padding: 0.85rem 1.2rem; border: none; background: var(--bg-card); color: #fff; outline: none; font-size: 1rem; }
+    .search-box input::placeholder { color: var(--texto-mutado); }
+    .search-box button { background: var(--detalhe-ouro); color: #120c1f; border: none; padding: 0 1.5rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+    .search-box button:hover { background: #ffca64; }
+    .hero-cta { margin-top: 1.8rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-hero-primary { background: var(--detalhe-ouro); color: #120c1f; text-decoration: none; padding: 12px 26px; border-radius: 6px; font-weight: 700; transition: all 0.2s; }
+    .btn-hero-primary:hover { background: #ffca64; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,184,52,0.3); }
+    .btn-hero-ghost { background: transparent; color: var(--detalhe-ouro); border: 1px solid var(--detalhe-ouro); text-decoration: none; padding: 12px 26px; border-radius: 6px; font-weight: 700; transition: all 0.2s; }
+    .btn-hero-ghost:hover { background: var(--detalhe-ouro); color: #120c1f; }
 
-                <div class="book-card">
-                    <div class="book-cover-placeholder">📙</div>
-                    <div class="book-info">
-                        <h3 class="book-title">O Caminho dos Reis</h3>
-                        <p class="book-author">Brandon Sanderson</p>
-                        <div class="book-status">
-                            <span class="badge-disponivel">Disponível</span>
-                            <button class="btn-action">Saquear</button>
-                        </div>
-                    </div>
-                </div>
+    main { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; width: 100%; }
+    section { margin-bottom: 4rem; }
+    section h2 { font-size: 2rem; color: var(--detalhe-ouro); margin-bottom: 2rem; border-left: 4px solid var(--detalhe-ouro); padding-left: 12px; letter-spacing: 0.5px; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .section-head h2 { margin-bottom: 0; }
+    .ver-todos { color: var(--texto-mutado); text-decoration: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+    .ver-todos:hover { color: var(--detalhe-ouro); }
 
-            </div>
-        </section>
+    .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .category-card { background: var(--bg-card); border: 1px solid var(--borda-brilho); border-radius: 8px; padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; text-decoration: none; display: block; }
+    .category-card:hover { transform: translateY(-5px); border-color: var(--detalhe-ouro); box-shadow: 0 5px 15px rgba(255,184,52,0.1); }
+    .category-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .category-card h3 { margin-bottom: 0.5rem; color: #fff; font-size: 1.15rem; }
+    .category-card p { font-size: 0.9rem; color: var(--texto-mutado); margin: 0; }
 
-    </main>
+    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2rem; }
+    .book-card { background: var(--bg-card); border: 1px solid var(--borda-brilho); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; }
+    .book-card:hover { transform: translateY(-4px); border-color: var(--detalhe-ouro); box-shadow: 0 8px 25px rgba(58,42,86,0.6); }
+    .book-cover { position: relative; height: 260px; background: linear-gradient(45deg, #251b3a, #3a2a56); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-emoji { font-size: 4rem; }
+    .book-cat { position: absolute; top: 10px; left: 10px; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--detalhe-ouro); background: rgba(18,12,31,0.85); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,184,52,0.4); }
+    .book-info { padding: 1.3rem; display: flex; flex-direction: column; flex-grow: 1; }
+    .book-title { font-size: 1.1rem; color: #fff; margin-bottom: 0.3rem; }
+    .book-author { font-size: 0.85rem; color: var(--detalhe-ouro); margin-bottom: 1rem; }
+    .book-status { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--borda-brilho); gap: 8px; }
+    .book-price { font-size: 1.15rem; font-weight: 700; color: var(--detalhe-ouro); white-space: nowrap; }
+    .btn-action { background: transparent; border: 1px solid var(--detalhe-ouro); color: var(--detalhe-ouro); padding: 7px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.82rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .btn-action:hover { background: var(--detalhe-ouro); color: #120c1f; box-shadow: 0 0 10px rgba(255,184,52,0.4); }
+    .empty-msg { grid-column: 1 / -1; text-align: center; padding: 50px; color: var(--texto-mutado); }
+    .empty-msg span { font-size: 3rem; display: block; margin-bottom: 12px; }
 
-    <footer>
-        <p>&copy; 2026 Dungeons Ebook - Desenvolvido por um Mestre da Programação. Todos os direitos reservados.</p>
-    </footer>
-
-</body>
-</html>
+    @@media (max-width: 768px) { .hero { padding: 4rem 1.5rem; } .hero h1 { font-size: 2.2rem; } main { padding: 2rem 1.5rem; } }
+</style>

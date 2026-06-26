@@ -17,15 +17,19 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(string busca)
     {
-        var query = _context.Livros.AsQueryable();
+        // Destaques na home: alguns produtos do acervo (com imagem)
+        var query = _context.Produtos.AsQueryable();
 
         if (!string.IsNullOrEmpty(busca))
         {
-            query = query.Where(l => l.Titulo.Contains(busca) || l.Autor.Contains(busca));
+            query = query.Where(p => p.Nome.Contains(busca)
+                || (p.Autor != null && p.Autor.Contains(busca))
+                || p.Categoria.Contains(busca));
         }
 
-        var livros = await query.OrderBy(l => l.Titulo).ToListAsync();
-        return View(livros);
+        ViewBag.Busca = busca;
+        var destaques = await query.OrderBy(p => p.Id).Take(string.IsNullOrEmpty(busca) ? 6 : 100).ToListAsync();
+        return View(destaques);
     }
 
     public IActionResult Privacy()
@@ -38,16 +42,48 @@ public class HomeController : Controller
         return View();
     }
 
-    public async Task<IActionResult> Produtos(string busca)
+    public async Task<IActionResult> Produtos(string? busca, string? categoria, decimal? precoMin, decimal? precoMax, string? ordenar)
     {
         var query = _context.Produtos.AsQueryable();
 
         if (!string.IsNullOrEmpty(busca))
         {
-            query = query.Where(p => p.Nome.Contains(busca) || p.Descricao.Contains(busca));
+            query = query.Where(p => p.Nome.Contains(busca)
+                || p.Descricao.Contains(busca)
+                || (p.Autor != null && p.Autor.Contains(busca)));
         }
 
-        var listaParaVenda = await query.OrderBy(p => p.Nome).ToListAsync();
+        if (!string.IsNullOrEmpty(categoria))
+            query = query.Where(p => p.Categoria == categoria);
+
+        if (precoMin.HasValue)
+            query = query.Where(p => p.Preco >= precoMin.Value);
+
+        if (precoMax.HasValue)
+            query = query.Where(p => p.Preco <= precoMax.Value);
+
+        query = ordenar switch
+        {
+            "preco_asc" => query.OrderBy(p => p.Preco),
+            "preco_desc" => query.OrderByDescending(p => p.Preco),
+            "nome_desc" => query.OrderByDescending(p => p.Nome),
+            _ => query.OrderBy(p => p.Nome),
+        };
+
+        // Lista de categorias para o filtro (montada a partir do acervo)
+        ViewBag.Categorias = await _context.Produtos
+            .Select(p => p.Categoria)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+
+        ViewBag.Busca = busca;
+        ViewBag.CategoriaAtual = categoria;
+        ViewBag.PrecoMin = precoMin;
+        ViewBag.PrecoMax = precoMax;
+        ViewBag.Ordenar = ordenar;
+
+        var listaParaVenda = await query.ToListAsync();
         return View(listaParaVenda);
     }
 

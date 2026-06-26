@@ -1,0 +1,145 @@
+@model List<sistemabiblioteca.Models.Pedido>
+@{
+    ViewData["Title"] = "Gerenciar Pedidos";
+    string? statusAtual = ViewBag.StatusAtual;
+    string ChipClass(string s) => statusAtual == s ? "filter-chip active" : "filter-chip";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<section class="hero">
+    <p class="hero-label"><i class="bi bi-receipt"></i> Painel de Pedidos</p>
+    <h1>Pergaminhos de <span>Pedidos</span></h1>
+    <p>Acompanhe e gerencie os pedidos dos aventureiros</p>
+</section>
+
+<main class="admin-page-container">
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert-sucesso"><i class="bi bi-check-circle-fill"></i> @TempData["MensagemSucesso"]</div>
+    }
+
+    <div class="stats-grid">
+        <div class="stat-card"><span class="stat-icon">📦</span><div><span class="stat-num">@ViewBag.TotalPedidos</span><span class="stat-label">Pedidos exibidos</span></div></div>
+        <div class="stat-card"><span class="stat-icon">⏳</span><div><span class="stat-num">@ViewBag.Pendentes</span><span class="stat-label">Pendentes</span></div></div>
+        <div class="stat-card"><span class="stat-icon">💰</span><div><span class="stat-num">@(((decimal)ViewBag.FaturamentoTotal).ToString("C"))</span><span class="stat-label">Faturamento</span></div></div>
+    </div>
+
+    <div class="admin-card-box">
+        <div class="admin-control-header">
+            <div class="header-left">
+                <h2 class="admin-panel-title"><i class="bi bi-list-check"></i> Lista de Pedidos</h2>
+                <p class="admin-panel-subtitle">Filtre por status ou busque por cliente</p>
+            </div>
+        </div>
+
+        <div class="admin-search-wrapper">
+            <div class="filter-chips">
+                <a href="@Url.Action("Pedidos")" class="@ChipClass(null)">Todos</a>
+                <a href="@Url.Action("Pedidos", new { status = "Pendente" })" class="@ChipClass("Pendente")">Pendente</a>
+                <a href="@Url.Action("Pedidos", new { status = "Em Preparo" })" class="@ChipClass("Em Preparo")">Em Preparo</a>
+                <a href="@Url.Action("Pedidos", new { status = "Enviado" })" class="@ChipClass("Enviado")">Enviado</a>
+                <a href="@Url.Action("Pedidos", new { status = "Concluído" })" class="@ChipClass("Concluído")">Concluído</a>
+                <a href="@Url.Action("Pedidos", new { status = "Cancelado" })" class="@ChipClass("Cancelado")">Cancelado</a>
+            </div>
+            <form method="get" class="admin-search-form">
+                <div class="search-input-box">
+                    <i class="bi bi-search search-inner-icon"></i>
+                    <input type="text" name="busca" placeholder="Buscar por nome ou e-mail..." value="@ViewBag.Busca" />
+                </div>
+                <button type="submit" class="btn-filtrar">🔮 Buscar</button>
+            </form>
+        </div>
+
+        <div class="table-responsive-custom">
+            <table class="table-arcana">
+                <thead>
+                    <tr>
+                        <th style="width:70px;">Pedido</th>
+                        <th>Cliente</th>
+                        <th>Data</th>
+                        <th style="width:80px;">Itens</th>
+                        <th style="width:120px;">Total</th>
+                        <th style="width:130px;">Status</th>
+                        <th style="width:120px;" class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var p in Model)
+                        {
+                            <tr>
+                                <td class="td-id">#@p.Id</td>
+                                <td><span class="book-title-cell">@p.NomeCliente</span><br /><span class="td-desc">@p.EmailCliente</span></td>
+                                <td class="td-desc">@p.DataPedido.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@p.Itens.Sum(i => i.Quantidade)</td>
+                                <td class="td-price">@p.Total.ToString("C")</td>
+                                <td><span class="status-badge status-@(p.Status.Replace(" ", "").Replace("í","i").ToLower())">@p.Status</span></td>
+                                <td class="text-center">
+                                    <a asp-action="DetalhesPedido" asp-route-id="@p.Id" class="btn-action-edit"><i class="bi bi-eye-fill"></i> Ver</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="7" class="table-empty-state"><i class="bi bi-inbox"></i><p>Nenhum pedido encontrado.</p></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<style>
+    body { margin: 0; background: #120c1f; color: #e2daeb; font-family: 'Segoe UI', sans-serif; }
+    .hero { padding: 4rem 2rem; text-align: center; background: linear-gradient(rgba(18,12,31,0.85), #120c1f), radial-gradient(circle, rgba(58,42,86,0.4) 0%, rgba(18,12,31,1) 70%); border-bottom: 1px solid #3a2a56; }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ffb834; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2.4rem; color: #fff; margin-bottom: 0.6rem; }
+    .hero h1 span { color: #ffb834; }
+    .hero p { font-size: 1rem; color: #9c8eb9; max-width: 560px; margin: 0 auto; }
+    .admin-page-container { max-width: 1300px; margin: 40px auto 80px; padding: 0 24px; }
+    .alert-sucesso { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); color: #2ecc71; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-bottom: 1.8rem; }
+    .stat-card { background: #1a1429; border: 1px solid #3a2a56; border-radius: 10px; padding: 1.3rem 1.5rem; display: flex; align-items: center; gap: 16px; }
+    .stat-icon { font-size: 2rem; }
+    .stat-num { display: block; font-size: 1.5rem; font-weight: 700; color: #ffb834; }
+    .stat-label { font-size: 0.8rem; color: #9c8eb9; }
+    .admin-card-box { background: #1a1429; border: 1px solid #3a2a56; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .admin-control-header { padding: 28px 40px 18px; border-bottom: 1px solid #3a2a56; }
+    .admin-panel-title { font-size: 1.4rem; font-weight: 700; color: #ffb834; margin: 0 0 6px; display: flex; align-items: center; gap: 10px; }
+    .admin-panel-subtitle { font-size: 0.86rem; color: #9c8eb9; margin: 0; }
+    .admin-search-wrapper { padding: 22px 40px; background: rgba(18,12,31,0.5); border-bottom: 1px solid #3a2a56; }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .filter-chip { font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; border: 1px solid #3a2a56; color: #9c8eb9; text-decoration: none; transition: all 0.2s; }
+    .filter-chip:hover { border-color: #ffb834; color: #ffb834; }
+    .filter-chip.active { background: #ffb834; color: #120c1f; border-color: #ffb834; font-weight: 700; }
+    .admin-search-form { display: flex; gap: 12px; max-width: 650px; }
+    .search-input-box { position: relative; flex: 1; display: flex; align-items: center; }
+    .search-inner-icon { position: absolute; left: 14px; color: #9c8eb9; }
+    .search-input-box input { width: 100%; padding: 11px 16px 11px 40px; border: 1px solid #3a2a56; border-radius: 6px; background: #120c1f; color: #e2daeb; outline: none; }
+    .search-input-box input:focus { border-color: #ffb834; }
+    .btn-filtrar { background: #3a2a56; color: #ffb834; border: 1px solid #3a2a56; padding: 0 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-filtrar:hover { background: #ffb834; color: #120c1f; }
+    .table-responsive-custom { width: 100%; overflow-x: auto; }
+    .table-arcana { width: 100%; border-collapse: collapse; text-align: left; }
+    .table-arcana th { background: #0b0714; color: #ffb834; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; padding: 14px 20px; border-bottom: 2px solid #ffb834; }
+    .table-arcana td { padding: 16px 20px; border-bottom: 1px solid #3a2a56; color: #e2daeb; font-size: 0.9rem; vertical-align: middle; }
+    .table-arcana tbody tr:hover { background: rgba(58,42,86,0.25); }
+    .td-id { color: #9c8eb9; font-weight: 600; }
+    .book-title-cell { font-weight: 700; color: #fff; }
+    .td-desc { font-size: 0.82rem; color: #9c8eb9; }
+    .td-price { font-weight: 700; color: #ffb834; }
+    .status-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; white-space: nowrap; }
+    .status-pendente { color: #f1c40f; background: rgba(241,196,15,0.12); border: 1px solid rgba(241,196,15,0.35); }
+    .status-empreparo { color: #3498db; background: rgba(52,152,219,0.12); border: 1px solid rgba(52,152,219,0.35); }
+    .status-enviado { color: #9b59b6; background: rgba(155,89,182,0.12); border: 1px solid rgba(155,89,182,0.35); }
+    .status-concluido { color: #2ecc71; background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.35); }
+    .status-cancelado { color: #e74c3c; background: rgba(231,76,60,0.12); border: 1px solid rgba(231,76,60,0.35); }
+    .btn-action-edit { font-size: 0.8rem; font-weight: 600; text-decoration: none; padding: 6px 14px; border-radius: 5px; display: inline-flex; align-items: center; gap: 6px; background: transparent; color: #ffb834; border: 1px solid #ffb834; transition: all 0.2s; }
+    .btn-action-edit:hover { background: #ffb834; color: #120c1f; }
+    .table-empty-state { text-align: center; padding: 60px 20px !important; color: #9c8eb9; }
+    .table-empty-state i { font-size: 2rem; margin-bottom: 8px; display: inline-block; }
+    @@media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .admin-control-header, .admin-search-wrapper { padding: 20px; } .admin-search-form { flex-direction: column; } }
+</style>

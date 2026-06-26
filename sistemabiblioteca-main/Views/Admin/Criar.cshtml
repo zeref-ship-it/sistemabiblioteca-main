@@ -35,9 +35,26 @@
                 </div>
                 <div class="form-group-custom">
                     <label asp-for="Categoria" class="form-label-custom">Categoria / Gênero</label>
-                    <input asp-for="Categoria" class="form-control-custom" placeholder="Ex: Romance, Didático, Brinde..." />
+                    <input asp-for="Categoria" class="form-control-custom" placeholder="Ex: D&D, Pathfinder, Fantasia, Suplemento..." />
                     <span asp-validation-for="Categoria" class="field-error"></span>
                 </div>
+            </div>
+            <div class="form-row-custom">
+                <div class="form-group-custom">
+                    <label asp-for="Autor" class="form-label-custom">Autor / Editora</label>
+                    <input asp-for="Autor" class="form-control-custom" placeholder="Ex: Wizards of the Coast" />
+                    <span asp-validation-for="Autor" class="field-error"></span>
+                </div>
+                <div class="form-group-custom">
+                    <label asp-for="Estoque" class="form-label-custom">Estoque</label>
+                    <input asp-for="Estoque" class="form-control-custom" type="number" min="0" placeholder="10" />
+                    <span asp-validation-for="Estoque" class="field-error"></span>
+                </div>
+            </div>
+            <div class="form-group-custom">
+                <label asp-for="ImagemUrl" class="form-label-custom">Imagem (URL da capa)</label>
+                <input asp-for="ImagemUrl" class="form-control-custom" placeholder="Ex: /images/livros/o-hobbit.svg" />
+                <span asp-validation-for="ImagemUrl" class="field-error"></span>
             </div>
             <div class="form-actions-bar">
                 <button type="submit" class="btn-salvar"><i class="bi bi-check2-circle"></i> Forjar Registro</button>
